@@ -49,7 +49,8 @@
 //     </div>
 //   )
 // }
-import { MouseEventHandler, useState } from 'react'
+import React, { MouseEventHandler, useState } from 'react'
+import Sqr from './squares'
 
 export default function Canvas({ url }: { url: string }) {
   const [isDown, setIsDown] = useState(false)
@@ -58,6 +59,8 @@ export default function Canvas({ url }: { url: string }) {
     width: 0,
     height: 0,
   })
+  const [id, setId] = useState(0)
+  const [squares, setSquares] = useState<HTMLElement[]>([])
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
@@ -68,7 +71,13 @@ export default function Canvas({ url }: { url: string }) {
   }
   const mouseUpHandler = (ev: MouseEvent) => {
     console.log('Mouse up')
-
+    const elem = document.getElementById(id.toString())
+    if (elem !== null) {
+      const newSq = [...squares, elem]
+      setSquares(newSq)
+    }
+    setId(id + 1)
+    console.log(id)
     setIsDown(false)
   }
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
@@ -95,13 +104,16 @@ export default function Canvas({ url }: { url: string }) {
   }
   const width = Math.abs(size.width)
   const height = Math.abs(size.height)
-  console.log(top)
+  console.log(squares)
 
   return (
     <div className="relative">
       <img draggable={false} src={url} />
+      {squares && squares.map(<Sqr />)}
+
       <div
         className="bg-green-500 bg-opacity-50 absolute"
+        id={id.toString()}
         style={{
           top: top,
           left: left,
