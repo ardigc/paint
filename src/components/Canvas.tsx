@@ -5,17 +5,19 @@ export default function Canvas({ url }: { url: string }) {
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
     setIsDown(true)
+    document.addEventListener('mouseup', mouseUpHandler, { once: true })
   }
-  const mouseUpHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
+  const mouseUpHandler = (ev: MouseEvent) => {
     console.log('Mouse up')
     setIsDown(false)
   }
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
-      console.log(ev.clientX)
-      console.log(ev.clientY)
+      console.log(ev.nativeEvent.offsetX)
+      console.log(ev.nativeEvent.offsetY)
     }
   }
+
   return (
     <div>
       <img
@@ -23,7 +25,6 @@ export default function Canvas({ url }: { url: string }) {
         src={url}
         onMouseMove={mouseMoveHandler}
         onMouseDown={mouseDownHandler}
-        onMouseUp={mouseUpHandler}
       />
       <div className="bg-green-500 bg-opacity-50" style={{}}></div>
     </div>
