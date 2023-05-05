@@ -75,6 +75,7 @@ export default function Canvas({ url }: { url: string }) {
     if (elem !== null) {
       const newSq = [...squares, elem]
       setSquares(newSq)
+      console.log(squares)
     }
     setId(id + 1)
     console.log(id)
@@ -109,7 +110,7 @@ export default function Canvas({ url }: { url: string }) {
   return (
     <div className="relative">
       <img draggable={false} src={url} />
-      {squares.length > 1 && squares.map((sqre) => <Sqre {...sqre} />)}
+      {/* {squares.length > 1 && squares.map((sqre) => <Sqre sqr1={sqre} />)} */}
 
       <div
         className="bg-green-500 bg-opacity-50 absolute"
