@@ -16,7 +16,6 @@ function App() {
   return (
     <div className="container mx-auto p-4">
       <h2>Upload your imagen</h2>
-      {/* Input para que el usuario suba una imagen */}
       <input
         ref={ref}
         type="file"
@@ -30,7 +29,6 @@ function App() {
       >
         <UploadIcon />
       </div>
-      {/* Si el usuario ha subido una imagen, mostrarla */}
       {url && <img src={url} />}
     </div>
   )
