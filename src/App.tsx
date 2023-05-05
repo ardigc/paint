@@ -1,16 +1,29 @@
-import { useRef } from 'react'
+import { ChangeEventHandler, useRef, useState } from 'react'
 import UploadIcon from './components/UploadIcon'
 
 function App() {
+  const [url, setUrl] = useState<string | null>(null)
   const ref = useRef<HTMLInputElement | null>(null)
   const clickHandler = () => {
     ref.current?.click()
+  }
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = (ev) => {
+    if (!ev.target.files) return
+    const img = ev.target.files[0]
+    const url = URL.createObjectURL(img)
+    setUrl(url)
   }
   return (
     <div className="container mx-auto p-4">
       <h2>Upload your imagen</h2>
       {/* Input para que el usuario suba una imagen */}
-      <input ref={ref} type="file" accept="image/*" className="hidden" />
+      <input
+        ref={ref}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={changeHandler}
+      />
       <div
         className="flex w-28 h-28 border-dashed border border-blue-500 rounded-md bg-stone-300 justify-center	items-center"
         onClick={clickHandler}
@@ -18,6 +31,7 @@ function App() {
         <UploadIcon />
       </div>
       {/* Si el usuario ha subido una imagen, mostrarla */}
+      {url && <img src={url} />}
     </div>
   )
 }
