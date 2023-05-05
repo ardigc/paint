@@ -3,10 +3,13 @@ import { MouseEventHandler, useState } from 'react'
 export default function Canvas({ url }: { url: string }) {
   const [isDown, setIsDown] = useState(false)
   const [coord, setCoord] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [size, setSize] = useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  })
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
-    const coord = { x: ev.nativeEvent.offsetX, y: ev.nativeEvent.offsetY }
-    setCoord(coord)
+    setCoord({ x: ev.nativeEvent.offsetX, y: ev.nativeEvent.offsetY })
     setIsDown(true)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
   }
@@ -16,9 +19,7 @@ export default function Canvas({ url }: { url: string }) {
   }
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
-      const width1 = ev.nativeEvent.offsetX
-      const heigth1 = ev.nativeEvent.offsetY
-      const size = { width: width1, heigth: heigth1 }
+      setSize({ width: ev.nativeEvent.offsetX, height: ev.nativeEvent.offsetY })
     }
   }
 
@@ -35,6 +36,8 @@ export default function Canvas({ url }: { url: string }) {
         style={{
           top: coord.y,
           left: coord.x,
+          height: size.height - coord.y,
+          width: size.width - coord.x,
         }}
       ></div>
     </div>
