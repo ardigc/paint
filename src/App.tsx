@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useRef, useState } from 'react'
 import UploadIcon from './components/UploadIcon'
+import Canvas from './components/Canvas'
 
 function App() {
   const [url, setUrl] = useState<string | null>(null)
@@ -29,7 +30,7 @@ function App() {
       >
         <UploadIcon />
       </div>
-      {url && <img src={url} />}
+      {url && <Canvas url={url} />}
     </div>
   )
 }
