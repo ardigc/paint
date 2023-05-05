@@ -1,3 +1,4 @@
-export default function Sqr({ sqre }: HTMLElement) {
-  return { sqre }
+export default function Sqre(props: { sqre: HTMLElement }) {
+  console.log(props.sqre)
+  return <div></div>
 }

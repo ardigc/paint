@@ -50,7 +50,7 @@
 //   )
 // }
 import React, { MouseEventHandler, useState } from 'react'
-import Sqr from './squares'
+import Sqre from './squares'
 
 export default function Canvas({ url }: { url: string }) {
   const [isDown, setIsDown] = useState(false)
@@ -109,7 +109,7 @@ export default function Canvas({ url }: { url: string }) {
   return (
     <div className="relative">
       <img draggable={false} src={url} />
-      {squares && squares.map(<Sqr />)}
+      {squares.length > 1 && squares.map((sqre) => <Sqre {...sqre} />)}
 
       <div
         className="bg-green-500 bg-opacity-50 absolute"
