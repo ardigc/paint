@@ -12,7 +12,6 @@ export default function Sqre({
   return (
     <div
       className="bg-green-500 bg-opacity-50 absolute"
-      // id={id.toString()}
       style={{
         top: top,
         left: left,
