@@ -65,15 +65,6 @@ export default function Canvas({ url }: { url: string }) {
     <div>
       <div className="relative">
         <img draggable={false} src={url} />
-        <div
-          className="bg-green-500 bg-opacity-50 absolute"
-          style={{
-            top: top,
-            left: left,
-            height: height,
-            width: width,
-          }}
-        ></div>
         {/* probar con is down para que arrastre o no sobre el cuadro el div de */}
         abajo
         <div
@@ -84,8 +75,15 @@ export default function Canvas({ url }: { url: string }) {
           <img draggable={false} src={url} />
         </div>
         {sqrArr.map((it) => (
-          <Sqre {...it} />
+          <Sqre {...it} down={isDown} />
         ))}
+        <Sqre
+          top={top}
+          left={left}
+          height={height}
+          width={width}
+          down={isDown}
+        />
       </div>
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"
