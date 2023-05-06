@@ -11,13 +11,12 @@ export default function Sqre({
   height: number
 }) {
   const [grab, setGrab] = useState(false)
-  const focusHandler = () => {
-    setGrab(true)
-  }
+
   return (
     <div
-      onFocus={focusHandler}
-      className="bg-green-500 bg-opacity-50 absolute"
+      onFocus={() => setGrab(true)}
+      onBlur={() => setGrab(false)}
+      className="bg-green-500 bg-opacity-50 absolute z-20"
       tabIndex={0}
       style={{
         top: top,
