@@ -74,15 +74,15 @@ export default function Canvas({ url }: { url: string }) {
   console.log(top, left, height, width)
   return (
     <div>
-      <div
-        className="relative"
-        onMouseMove={mouseMoveHandler}
-        onMouseDown={mouseDownHandler}
-      >
-        <img draggable={false} onLoad={onLoadHandler} src={url} />
+      <div className="relative" onMouseMove={mouseMoveHandler}>
+        <img
+          onMouseDown={mouseDownHandler}
+          draggable={false}
+          onLoad={onLoadHandler}
+          src={url}
+        />
         {/* probar con is down para que arrastre o no sobre el cuadro el div de abajo*/}
 
-        <div className="absolute z-10 top-0 opacity-0 h-full w-full"></div>
         {sqrArr.map((it) => (
           <Sqre {...it} />
         ))}
