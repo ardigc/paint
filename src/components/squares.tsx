@@ -1,21 +1,23 @@
-import { useState, MouseEventHandler } from 'react'
+import { useState, MouseEventHandler, ReactElement } from 'react'
 export default function Sqre({
   top,
   left,
   width,
   height,
+  index,
+  fn,
+  setCounter,
 }: {
   top: number
   left: number
   width: number
   height: number
+  index: number
+  fn: any
+  setCounter: any
 }) {
-  // const [rect, setRect] = useState<DOMRect>()
   const [isDown, setIsDown] = useState(false)
-  // const [size, setSize] = useState<{ width: number; height: number }>({
-  //   width: width,
-  //   height: height,
-  // })
+
   const [move, setMove] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
@@ -25,26 +27,20 @@ export default function Sqre({
     x: 0,
     y: 0,
   })
-  // console.log(coord)
+
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    // if (rect) {
-    // const target = ev.target as HTMLElement
-    // setRect(target.getBoundingClientRect())
     console.log('Mouse down')
-    // setCoord({ x: ev.clientX - rect.x, y: ev.clientY - rect.y })
     setCoord({ x: ev.clientX, y: ev.clientY })
+    setMove({ x: ev.clientX, y: ev.clientY })
     setIsDown(true)
+
+    // fn(index, left, top)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
-    // }
   }
-  // console.log(rect?.x)
+
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
       setMove({ x: ev.clientX, y: ev.clientY })
-      // setSize({
-      //   width: ev.clientX - rect.x - coord.x,
-      //   height: ev.clientY - rect.y - coord.y,
-      // })
     }
   }
   const mouseUpHandler = () => {
@@ -53,28 +49,37 @@ export default function Sqre({
     setIsDown(false)
   }
   const [grab, setGrab] = useState(false)
-  let index: number
+  let zindex: number
   let cursor: string
-  // console.log("move:"+move.x+"  "+move.y)
-  // console.log("cood:"+coord.x+"  "+coord.y)
-  const moveX = move.x - coord.x
-  console.log(moveX)
+  let moveX = 0
+  let moveY = 0
+
   if (grab) {
-    // top = size.height < 0 ? coord.y + size.height : coord.y
-    // left = size.width < 0 ? coord.x + size.width : coord.x
-    // width = Math.abs(size.width)
-    // height = Math.abs(size.height)
-    index = 20
+    moveX = move.x - coord.x
+    moveY = move.y - coord.y
+    top = top + moveY
+    left = left + moveX
+    zindex = 20
     cursor = 'move'
   } else {
-    index = 0
+    zindex = 0
     cursor = 'default'
   }
+  // console.log(grab)
+  // console.log("Movey "+move.y)
+  // console.log("corrdx "+coord.x)
+  // console.log("Coordy "+coord.y)
+  const mouseUpHandler2 = () => {
+    fn(index, left, top)
+    setCounter(Math.random)
+  }
+
   return (
     <div onClick={() => setGrab(true)} onBlur={() => setGrab(false)}>
       <div
         onMouseDown={mouseDownHandler}
         onMouseMove={mouseMoveHandler}
+        onMouseUp={mouseUpHandler2}
         className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl"
         id="div"
         tabIndex={0}
@@ -83,8 +88,9 @@ export default function Sqre({
           left: left,
           height: height,
           width: width,
-          zIndex: index,
+          zIndex: zindex,
           cursor: cursor,
+          // translate: (moveX, moveY)
         }}
       ></div>
       {grab && (
