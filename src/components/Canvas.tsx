@@ -59,8 +59,11 @@ export default function Canvas({ url }: { url: string }) {
     width: 0,
     height: 0,
   })
-  const [id, setId] = useState(0)
-  const [squares, setSquares] = useState<HTMLElement[]>([])
+  const [sqrArr, setSqrArr] = useState<
+    { top: number; left: number; width: number; height: number }[]
+  >([{ top: 0, left: 0, width: 0, height: 0 }])
+  // const [id, setId] = useState(0)
+  // const [squares, setSquares] = useState<HTMLElement[]>([])
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
@@ -68,18 +71,6 @@ export default function Canvas({ url }: { url: string }) {
     setCoord({ x: ev.nativeEvent.offsetX, y: ev.nativeEvent.offsetY })
     setIsDown(true)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
-  }
-  const mouseUpHandler = (ev: MouseEvent) => {
-    console.log('Mouse up')
-    const elem = document.getElementById(id.toString())
-    if (elem !== null) {
-      const newSq = [...squares, elem]
-      setSquares(newSq)
-      console.log(squares)
-    }
-    setId(id + 1)
-    console.log(id)
-    setIsDown(false)
   }
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
@@ -89,14 +80,14 @@ export default function Canvas({ url }: { url: string }) {
       })
     }
   }
-  let top
+  let top: number
   // const top = size.height < 0 ? coord.y + size.height : coord.y;
   if (size.height < 0) {
     top = coord.y + size.height
   } else {
     top = coord.y
   }
-  let left
+  let left: number
   // const left = size.width < 0 ? coord.x + size.width : coord.x;
   if (size.width < 0) {
     left = coord.x + size.width
@@ -105,7 +96,24 @@ export default function Canvas({ url }: { url: string }) {
   }
   const width = Math.abs(size.width)
   const height = Math.abs(size.height)
-  console.log(squares)
+  const mouseUpHandler = (ev: MouseEvent) => {
+    console.log('Mouse up')
+    const sqr = { top: top, left: left, width: width, height: height }
+    const sqrArrCopy = sqrArr
+    sqrArrCopy?.push(sqr)
+    console.log(sqrArrCopy)
+    setSqrArr(sqrArrCopy)
+    // const elem = document.getElementById(id.toString())
+    // if (elem !== null) {
+    // const newSq = [...squares, elem]
+    // setSquares(newSq)
+    // console.log(squares)
+    // }
+    // setId(id + 1)
+    // console.log(id)
+    setIsDown(false)
+  }
+  // console.log(squares)
 
   return (
     <div className="relative">
@@ -114,7 +122,7 @@ export default function Canvas({ url }: { url: string }) {
 
       <div
         className="bg-green-500 bg-opacity-50 absolute"
-        id={id.toString()}
+        // id={id.toString()}
         style={{
           top: top,
           left: left,
