@@ -72,6 +72,8 @@ export default function Canvas({ url }: { url: string }) {
     sqrArrCopy?.push(sqr)
     console.log(sqrArrCopy)
     setSqrArr(sqrArrCopy)
+    setSize({ width: 0, height: 0 })
+    setCoord({ x: 0, y: 0 })
     setCoord({ x: ev.nativeEvent.offsetX, y: ev.nativeEvent.offsetY })
     setIsDown(true)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
