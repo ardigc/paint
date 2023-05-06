@@ -49,7 +49,7 @@
 //     </div>
 //   )
 // }
-import React, { MouseEventHandler, useState } from 'react'
+import { MouseEventHandler, useState } from 'react'
 import Sqre from './squares'
 
 export default function Canvas({ url }: { url: string }) {
@@ -67,7 +67,11 @@ export default function Canvas({ url }: { url: string }) {
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
-
+    const sqr = { top: top, left: left, width: width, height: height }
+    const sqrArrCopy = sqrArr
+    sqrArrCopy?.push(sqr)
+    console.log(sqrArrCopy)
+    setSqrArr(sqrArrCopy)
     setCoord({ x: ev.nativeEvent.offsetX, y: ev.nativeEvent.offsetY })
     setIsDown(true)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
@@ -96,13 +100,9 @@ export default function Canvas({ url }: { url: string }) {
   }
   const width = Math.abs(size.width)
   const height = Math.abs(size.height)
-  const mouseUpHandler = (ev: MouseEvent) => {
+  const mouseUpHandler = () => {
     console.log('Mouse up')
-    const sqr = { top: top, left: left, width: width, height: height }
-    const sqrArrCopy = sqrArr
-    sqrArrCopy?.push(sqr)
-    console.log(sqrArrCopy)
-    setSqrArr(sqrArrCopy)
+
     // const elem = document.getElementById(id.toString())
     // if (elem !== null) {
     // const newSq = [...squares, elem]
@@ -113,30 +113,46 @@ export default function Canvas({ url }: { url: string }) {
     // console.log(id)
     setIsDown(false)
   }
+  const clickHandle = () => {
+    setSqrArr([{ top: 0, left: 0, width: 0, height: 0 }])
+    setSize({ width: 0, height: 0 })
+    setCoord({ x: 0, y: 0 })
+  }
   // console.log(squares)
 
   return (
-    <div className="relative">
-      <img draggable={false} src={url} />
-      {/* {squares.length > 1 && squares.map((sqre) => <Sqre sqr1={sqre} />)} */}
-
-      <div
-        className="bg-green-500 bg-opacity-50 absolute"
-        // id={id.toString()}
-        style={{
-          top: top,
-          left: left,
-          height: height,
-          width: width,
-        }}
-      ></div>
-      <div
-        className="absolute z-10 top-0 opacity-0"
-        onMouseMove={mouseMoveHandler}
-        onMouseDown={mouseDownHandler}
-      >
+    <div>
+      <div className="relative">
         <img draggable={false} src={url} />
+        {/* {squares.length > 1 && squares.map((sqre) => <Sqre sqr1={sqre} />)} */}
+
+        <div
+          className="bg-green-500 bg-opacity-50 absolute"
+          // id={id.toString()}
+          style={{
+            top: top,
+            left: left,
+            height: height,
+            width: width,
+          }}
+        ></div>
+        {sqrArr.map((it) => (
+          <Sqre {...it} />
+        ))}
+        <div
+          className="absolute z-10 top-0 opacity-0"
+          onMouseMove={mouseMoveHandler}
+          onMouseDown={mouseDownHandler}
+        >
+          <img draggable={false} src={url} />
+        </div>
       </div>
+      <button
+        className="border-t-neutral-900 bg-slate-500 rounded-md"
+        onClick={clickHandle}
+      >
+        Limpiar cuadros
+      </button>
     </div>
   )
 }
