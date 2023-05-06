@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState } from 'react'
+import { MouseEventHandler, useState, ReactEventHandler } from 'react'
 import Sqre from './squares'
 
 export default function Canvas({ url }: { url: string }) {
@@ -8,28 +8,35 @@ export default function Canvas({ url }: { url: string }) {
     width: 0,
     height: 0,
   })
+  // const ref = useRef<HTMLImageElement>(null)
+  // const imageRef = useRef(null);
+
+  const [rect, setRect] = useState<DOMRect>()
   const [sqrArr, setSqrArr] = useState<
     { top: number; left: number; width: number; height: number }[]
   >([{ top: 0, left: 0, width: 0, height: 0 }])
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    console.log('Mouse down')
-    const sqr = { top: top, left: left, width: width, height: height }
-    const sqrArrCopy = sqrArr
-    sqrArrCopy?.push(sqr)
-    console.log(sqrArrCopy)
-    setSqrArr(sqrArrCopy)
-    setSize({ width: 0, height: 0 })
-    setCoord({ x: 0, y: 0 })
-    setCoord({ x: ev.nativeEvent.offsetX, y: ev.nativeEvent.offsetY })
-    setIsDown(true)
-    document.addEventListener('mouseup', mouseUpHandler, { once: true })
+    if (rect) {
+      console.log('Mouse down')
+      const sqr = { top: top, left: left, width: width, height: height }
+      const sqrArrCopy = sqrArr
+      sqrArrCopy?.push(sqr)
+      console.log(sqrArrCopy)
+      setSqrArr(sqrArrCopy)
+      setSize({ width: 0, height: 0 })
+      setCoord({ x: 0, y: 0 })
+      setCoord({ x: ev.clientX - rect.x, y: ev.clientY - rect.y })
+      setIsDown(true)
+      document.addEventListener('mouseup', mouseUpHandler, { once: true })
+    }
   }
+  // console.log(rect?.x)
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    if (isDown) {
+    if (isDown && rect) {
       setSize({
-        width: ev.nativeEvent.offsetX - coord.x,
-        height: ev.nativeEvent.offsetY - coord.y,
+        width: ev.clientX - rect.x - coord.x,
+        height: ev.clientY - rect.y - coord.y,
       })
     }
   }
@@ -48,7 +55,12 @@ export default function Canvas({ url }: { url: string }) {
     left = coord.x
   }
   const width = Math.abs(size.width)
+  // const element = EventTarget as HTMLElement
   const height = Math.abs(size.height)
+  const onLoadHandler: ReactEventHandler = (ev) => {
+    const target = ev.target as HTMLElement
+    setRect(target.getBoundingClientRect())
+  }
   const mouseUpHandler = () => {
     console.log('Mouse up')
 
@@ -59,31 +71,22 @@ export default function Canvas({ url }: { url: string }) {
     setSize({ width: 0, height: 0 })
     setCoord({ x: 0, y: 0 })
   }
-  // console.log(squares)
-
+  console.log(top, left, height, width)
   return (
     <div>
-      <div className="relative">
-        <img draggable={false} src={url} />
-        {/* probar con is down para que arrastre o no sobre el cuadro el div de */}
-        abajo
-        <div
-          className="absolute z-10 top-0 opacity-0"
-          onMouseMove={mouseMoveHandler}
-          onMouseDown={mouseDownHandler}
-        >
-          <img draggable={false} src={url} />
-        </div>
+      <div
+        className="relative"
+        onMouseMove={mouseMoveHandler}
+        onMouseDown={mouseDownHandler}
+      >
+        <img draggable={false} onLoad={onLoadHandler} src={url} />
+        {/* probar con is down para que arrastre o no sobre el cuadro el div de abajo*/}
+
+        <div className="absolute z-10 top-0 opacity-0 h-full w-full"></div>
         {sqrArr.map((it) => (
-          <Sqre {...it} down={isDown} />
+          <Sqre {...it} />
         ))}
-        <Sqre
-          top={top}
-          left={left}
-          height={height}
-          width={width}
-          down={isDown}
-        />
+        <Sqre top={top} left={left} height={height} width={width} />
       </div>
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"
