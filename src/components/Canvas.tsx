@@ -74,9 +74,8 @@ export default function Canvas({ url }: { url: string }) {
             width: width,
           }}
         ></div>
-        {sqrArr.map((it) => (
-          <Sqre {...it} />
-        ))}
+        // probar con is down para que arrastre o no sobre el cuadro el div de
+        abajo
         <div
           className="absolute z-10 top-0 opacity-0"
           onMouseMove={mouseMoveHandler}
@@ -84,6 +83,9 @@ export default function Canvas({ url }: { url: string }) {
         >
           <img draggable={false} src={url} />
         </div>
+        {sqrArr.map((it) => (
+          <Sqre {...it} />
+        ))}
       </div>
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"
