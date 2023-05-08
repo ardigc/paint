@@ -17,6 +17,7 @@ export default function Sqre({
   // setCounter: any
 }) {
   const [isDown, setIsDown] = useState(false)
+  const [isDown2, setIsDown2] = useState(false)
   const myRef = useRef<HTMLDivElement | null>(null)
 
   const [move, setMove] = useState<{ x: number; y: number }>({
@@ -48,14 +49,16 @@ export default function Sqre({
     console.log('Mouse down2')
     // setCoord({ x: ev.clientX, y: ev.clientY })
     // setMove({ x: ev.clientX, y: ev.clientY })
-    setIsDown(true)
-    document.addEventListener('mousemove', mouseMoveHandler2)
+    setIsDown2(true)
+    // console.log(isDown)
     // fn(index, left, top)
+    console.log(isDown2)
+    document.addEventListener('mousemove', mouseMoveHandler2)
     document.addEventListener('mouseup', mouseUpHandler3, { once: true })
   }
 
   const mouseMoveHandler2 = (ev: MouseEvent) => {
-    if (isDown) {
+    if (isDown2) {
       console.log('hola')
       console.log(ev.clientX, ev.clientY)
     }
@@ -64,7 +67,7 @@ export default function Sqre({
     console.log('Mouse up3')
     // setCoord({ x: 0, y: 0 })
     // setMove({ x: 0, y: 0 })
-    setIsDown(false)
+    setIsDown2(false)
   }
   const mouseUpHandler = () => {
     console.log('Mouse up')
@@ -139,7 +142,7 @@ export default function Sqre({
           // onMouseMove={mouseMoveHandler2}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
+          className="h-40 w-40 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
           style={{ top: top + height / 2, left: left - 5 }}
           tabIndex={1}
         ></div>
