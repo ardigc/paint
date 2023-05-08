@@ -11,6 +11,8 @@ export default function Canvas({ url }: { url: string }) {
   const [counter, setCounter] = useState(0)
   const [top, setTop] = useState(0)
   const [left, setLeft] = useState(0)
+  const [height, setHeight] = useState(0)
+  const [width, setWidth] = useState(0)
   // const ref = useRef<HTMLImageElement>(null)
   // const imageRef = useRef(null);
 
@@ -63,17 +65,29 @@ export default function Canvas({ url }: { url: string }) {
       } else {
         setLeft(coord.x)
       }
+      setWidth(Math.abs(size.width))
+      setHeight(Math.abs(size.height))
     }
   }
-  function modMove(index: number, movY: number, movX: number) {
+  function modMove(
+    index: number,
+    movY: number,
+    movX: number,
+    height: number,
+    width: number
+  ) {
     if (index !== 0) {
       const sqrArrCopy = sqrArr
       sqrArrCopy[index].top = movX
       sqrArrCopy[index].left = movY
+      // sqrArrCopy[index].height = height
+      // sqrArrCopy[index].width = width
       setSqrArr(sqrArrCopy)
     } else {
       setTop(movX)
       setLeft(movY)
+      // setHeight(height)
+      // setWidth(width)
     }
     setCounter(counter + 1)
   }
@@ -81,9 +95,7 @@ export default function Canvas({ url }: { url: string }) {
 
   // const top = size.height < 0 ? coord.y + size.height : coord.y;
 
-  const width = Math.abs(size.width)
   // const element = EventTarget as HTMLElement
-  const height = Math.abs(size.height)
   const onLoadHandler: ReactEventHandler = (ev) => {
     const target = ev.target as HTMLElement
     setRect(target.getBoundingClientRect())

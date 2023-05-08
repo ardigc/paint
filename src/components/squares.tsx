@@ -32,11 +32,11 @@ export default function Sqre({
     y: 0,
   })
   const [size, setSize] = useState<{
-    top1: number
-    left1: number
-    height1: number
-    width1: number
-  }>({ top1: top, left1: left, height1: height, width1: width })
+    top: number
+    left: number
+    height: number
+    width: number
+  }>({ top: top, left: left, height: height, width: width })
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
@@ -66,8 +66,10 @@ export default function Sqre({
     if (isDown2) {
       // console.log(bottom-ev.clientY)
       // setBottom(prevCount => prevCount +ev.clientY)
-      console.log('bottom', bottom)
-      setBottom(bottom - ev.clientY)
+      let sizeCopy = size
+      sizeCopy.height = bottom - ev.clientY
+      setSize(sizeCopy)
+      console.log('size', size)
       // console.log(top + height)
 
       // console.log('hola')
@@ -98,7 +100,11 @@ export default function Sqre({
     // console.log(top + ' (' + move.x + ' - ' + coord.x + ')')
     top = top + moveY
     left = left + moveX
-    height = height + bottom
+    // width=size.width
+    console.log(height)
+    // height=height-size.height
+    console.log(height)
+
     zindex = 15
     cursor = 'move'
   } else {
@@ -109,7 +115,7 @@ export default function Sqre({
   // console.log("corrdx "+coord.x)
   // console.log("Coordy "+coord.y)
   const mouseUpHandler2 = () => {
-    fn(index, left, top)
+    fn(index, left, top, height)
     setIsDown(false)
     // setCounter(Math.random)
   }
