@@ -109,6 +109,7 @@ export default function Canvas({ url }: { url: string }) {
           onMouseDown={mouseDownHandler}
           onLoad={onLoadHandler}
           src={url}
+          className="select-none"
         />
         {/* probar con is down para que arrastre o no sobre el cuadro el div de abajo*/}
 

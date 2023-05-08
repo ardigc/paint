@@ -18,6 +18,8 @@ export default function Sqre({
 }) {
   const [isDown, setIsDown] = useState(false)
   const [isDown2, setIsDown2] = useState(false)
+
+  const [bottom, setBottom] = useState(height)
   const myRef = useRef<HTMLDivElement | null>(null)
 
   const [move, setMove] = useState<{ x: number; y: number }>({
@@ -45,13 +47,11 @@ export default function Sqre({
       setMove({ x: ev.clientX, y: ev.clientY })
     }
   }
-  const mouseDownHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
+  const mouseDownhandlerbottom: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down2')
-    // setCoord({ x: ev.clientX, y: ev.clientY })
-    // setMove({ x: ev.clientX, y: ev.clientY })
     setIsDown2(true)
-    // console.log(isDown)
-    // fn(index, left, top)
+    console.log(bottom)
+    // console.log("origin",ev.clientX, ev.clientY)
     console.log(isDown2)
     document.addEventListener('mousemove', mouseMoveHandler2)
     document.addEventListener('mouseup', mouseUpHandler3, { once: true })
@@ -59,13 +59,19 @@ export default function Sqre({
 
   const mouseMoveHandler2 = (ev: MouseEvent) => {
     // if (isDown2) {
-    console.log('hola')
-    console.log(ev.clientX, ev.clientY)
+    // console.log(bottom-ev.clientY)
+    // setBottom(prevCount => prevCount +ev.clientY)
+    console.log('bottom', bottom)
+    console.log(ev.movementY)
+
+    // console.log('hola')
     // }
   }
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
+
     document.removeEventListener('mousemove', mouseMoveHandler2)
+
     // setCoord({ x: 0, y: 0 })
     // setMove({ x: 0, y: 0 })
     setIsDown2(false)
@@ -139,7 +145,6 @@ export default function Sqre({
       ></div>
       {grab && (
         <div
-          onMouseDown={mouseDownHandler2}
           // onMouseMove={mouseMoveHandler2}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
@@ -159,6 +164,7 @@ export default function Sqre({
       )}
       {grab && (
         <div
+          onMouseDown={mouseDownhandlerbottom}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
           className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
