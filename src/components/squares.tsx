@@ -19,7 +19,7 @@ export default function Sqre({
   const [isDown, setIsDown] = useState(false)
   const [isDown2, setIsDown2] = useState(false)
 
-  const [bottom, setBottom] = useState(height)
+  const [bottom, setBottom] = useState(0)
   const myRef = useRef<HTMLDivElement | null>(null)
 
   const [move, setMove] = useState<{ x: number; y: number }>({
@@ -31,6 +31,12 @@ export default function Sqre({
     x: 0,
     y: 0,
   })
+  const [size, setSize] = useState<{
+    top1: number
+    left1: number
+    height1: number
+    width1: number
+  }>({ top1: top, left1: left, height1: height, width1: width })
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
@@ -61,7 +67,7 @@ export default function Sqre({
       // console.log(bottom-ev.clientY)
       // setBottom(prevCount => prevCount +ev.clientY)
       console.log('bottom', bottom)
-      console.log(bottom - ev.clientY)
+      setBottom(bottom - ev.clientY)
       // console.log(top + height)
 
       // console.log('hola')
@@ -92,7 +98,8 @@ export default function Sqre({
     // console.log(top + ' (' + move.x + ' - ' + coord.x + ')')
     top = top + moveY
     left = left + moveX
-    zindex = 20
+    height = height + bottom
+    zindex = 15
     cursor = 'move'
   } else {
     zindex = 0
@@ -143,7 +150,7 @@ export default function Sqre({
       ></div>
       {grab && (
         <div
-          className="absolute top-0 bottom-0 left-0 right-0"
+          className="absolute top-0 bottom-0 left-0 right-0 z-30"
           onMouseMove={mouseMoveHandler2}
           onMouseUp={mouseUpHandler3}
         ></div>
