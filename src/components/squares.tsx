@@ -58,13 +58,14 @@ export default function Sqre({
   }
 
   const mouseMoveHandler2 = (ev: MouseEvent) => {
-    if (isDown2) {
-      console.log('hola')
-      console.log(ev.clientX, ev.clientY)
-    }
+    // if (isDown2) {
+    console.log('hola')
+    console.log(ev.clientX, ev.clientY)
+    // }
   }
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
+    document.removeEventListener('mousemove', mouseMoveHandler2)
     // setCoord({ x: 0, y: 0 })
     // setMove({ x: 0, y: 0 })
     setIsDown2(false)
@@ -142,7 +143,7 @@ export default function Sqre({
           // onMouseMove={mouseMoveHandler2}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
-          className="h-40 w-40 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
+          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
           style={{ top: top + height / 2, left: left - 5 }}
           tabIndex={1}
         ></div>
