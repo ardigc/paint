@@ -28,7 +28,7 @@ export default function Sqre({
     x: 0,
     y: 0,
   })
-
+  // prueba
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
     setCoord({ x: ev.clientX, y: ev.clientY })
