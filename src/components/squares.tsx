@@ -1,4 +1,4 @@
-import { useState, MouseEventHandler, ReactElement } from 'react'
+import { useState, MouseEventHandler, useRef, ReactElement } from 'react'
 export default function Sqre({
   top,
   left,
@@ -17,6 +17,7 @@ export default function Sqre({
   // setCounter: any
 }) {
   const [isDown, setIsDown] = useState(false)
+  const myRef = useRef<HTMLDivElement | null>(null)
 
   const [move, setMove] = useState<{ x: number; y: number }>({
     x: 0,
@@ -77,7 +78,22 @@ export default function Sqre({
   }
 
   return (
-    <div onClick={() => setGrab(true)} onBlur={() => setGrab(false)}>
+    <div
+      onClick={() => setGrab(true)}
+      ref={myRef}
+      onBlur={(event) => {
+        if (myRef.current !== null) {
+          if (
+            event.relatedTarget &&
+            myRef.current.contains(event.relatedTarget)
+          ) {
+            return
+          }
+          setGrab(false)
+        }
+      }}
+      tabIndex={1}
+    >
       <div
         onMouseDown={mouseDownHandler}
         onMouseMove={mouseMoveHandler}
@@ -97,34 +113,38 @@ export default function Sqre({
       ></div>
       {grab && (
         <div
-          onClick={() => setGrab(true)}
-          onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab"
+          // onClick={() => setGrab(true)}
+          // onBlur={() => setGrab(false)}
+          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
           style={{ top: top + height / 2, left: left - 5 }}
+          tabIndex={1}
         ></div>
       )}
       {grab && (
         <div
-          onClick={() => setGrab(true)}
-          onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab"
+          // onClick={() => setGrab(true)}
+          // onBlur={() => setGrab(false)}
+          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
           style={{ top: top + height / 2, left: left + width - 5 }}
+          tabIndex={1}
         ></div>
       )}
       {grab && (
         <div
-          onClick={() => setGrab(true)}
-          onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab"
+          // onClick={() => setGrab(true)}
+          // onBlur={() => setGrab(false)}
+          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
           style={{ top: top + height - 5, left: left + width / 2 }}
+          tabIndex={1}
         ></div>
       )}
       {grab && (
         <div
-          onClick={() => setGrab(true)}
-          onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab"
+          // onClick={() => setGrab(true)}
+          // onBlur={() => setGrab(false)}
+          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
           style={{ top: top - 5, left: left + width / 2 }}
+          tabIndex={1}
         ></div>
       )}
     </div>
