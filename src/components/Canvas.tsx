@@ -9,6 +9,8 @@ export default function Canvas({ url }: { url: string }) {
     height: 0,
   })
   const [counter, setCounter] = useState(0)
+  const [top, setTop] = useState(0)
+  const [left, setLeft] = useState(0)
   // const ref = useRef<HTMLImageElement>(null)
   // const imageRef = useRef(null);
 
@@ -43,37 +45,42 @@ export default function Canvas({ url }: { url: string }) {
       document.addEventListener('mouseup', mouseUpHandler, { once: true })
     }
   }
-  console.log(sqrArr)
+  // console.log(sqrArr)
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown && rect) {
       setSize({
         width: ev.clientX - rect.x - coord.x,
         height: ev.clientY - rect.y - coord.y,
       })
+      if (size.height < 0) {
+        setTop(coord.y + size.height)
+      } else {
+        setTop(coord.y)
+      }
+      // const left = size.width < 0 ? coord.x + size.width : coord.x;
+      if (size.width < 0) {
+        setLeft(coord.x + size.width)
+      } else {
+        setLeft(coord.x)
+      }
     }
   }
   function modMove(index: number, movY: number, movX: number) {
-    const sqrArrCopy = sqrArr
-    sqrArrCopy[index].top = movX
-    sqrArrCopy[index].left = movY
-    console.log(sqrArrCopy[3])
-    setSqrArr(sqrArrCopy)
-    // setCounter(counter+1)
+    if (index !== 0) {
+      const sqrArrCopy = sqrArr
+      sqrArrCopy[index].top = movX
+      sqrArrCopy[index].left = movY
+      setSqrArr(sqrArrCopy)
+    } else {
+      setTop(movX)
+      setLeft(movY)
+    }
+    setCounter(counter + 1)
   }
-  let top: number
+  // console.log(sqrArr[3])
+
   // const top = size.height < 0 ? coord.y + size.height : coord.y;
-  if (size.height < 0) {
-    top = coord.y + size.height
-  } else {
-    top = coord.y
-  }
-  let left: number
-  // const left = size.width < 0 ? coord.x + size.width : coord.x;
-  if (size.width < 0) {
-    left = coord.x + size.width
-  } else {
-    left = coord.x
-  }
+
   const width = Math.abs(size.width)
   // const element = EventTarget as HTMLElement
   const height = Math.abs(size.height)
@@ -93,7 +100,7 @@ export default function Canvas({ url }: { url: string }) {
   }
   console.log(sqrArr)
   console.log('Ahora se renderiza')
-  console.log(counter)
+  // console.log(top+"  "+left)
   return (
     <div>
       <div className="relative" onMouseMove={mouseMoveHandler}>
@@ -106,7 +113,11 @@ export default function Canvas({ url }: { url: string }) {
         {/* probar con is down para que arrastre o no sobre el cuadro el div de abajo*/}
 
         {sqrArr.map((it) => (
-          <Sqre {...it} fn={modMove} setCounter={setCounter} />
+          <Sqre
+            {...it}
+            fn={modMove}
+            //  setCounter={setCounter}
+          />
         ))}
         <Sqre
           top={top}
@@ -114,7 +125,7 @@ export default function Canvas({ url }: { url: string }) {
           height={height}
           width={width}
           fn={modMove}
-          setCounter={setCounter}
+          // setCounter={setCounter}
           index={0}
         />
       </div>

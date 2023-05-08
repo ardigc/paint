@@ -6,15 +6,15 @@ export default function Sqre({
   height,
   index,
   fn,
-  setCounter,
-}: {
+}: // setCounter,
+{
   top: number
   left: number
   width: number
   height: number
   index: number
   fn: any
-  setCounter: any
+  // setCounter: any
 }) {
   const [isDown, setIsDown] = useState(false)
 
@@ -45,7 +45,8 @@ export default function Sqre({
   }
   const mouseUpHandler = () => {
     console.log('Mouse up')
-
+    setCoord({ x: 0, y: 0 })
+    setMove({ x: 0, y: 0 })
     setIsDown(false)
   }
   const [grab, setGrab] = useState(false)
@@ -57,6 +58,7 @@ export default function Sqre({
   if (grab) {
     moveX = move.x - coord.x
     moveY = move.y - coord.y
+    console.log(top + ' (' + move.x + ' - ' + coord.x + ')')
     top = top + moveY
     left = left + moveX
     zindex = 20
@@ -65,13 +67,13 @@ export default function Sqre({
     zindex = 0
     cursor = 'default'
   }
-  // console.log(grab)
   // console.log("Movey "+move.y)
   // console.log("corrdx "+coord.x)
   // console.log("Coordy "+coord.y)
   const mouseUpHandler2 = () => {
     fn(index, left, top)
-    setCounter(Math.random)
+    setIsDown(false)
+    // setCounter(Math.random)
   }
 
   return (
