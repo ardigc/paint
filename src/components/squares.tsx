@@ -51,6 +51,7 @@ export default function Sqre({
     console.log('Mouse down2')
     setIsDown2(true)
     console.log(bottom)
+    setBottom(ev.clientY)
     // console.log("origin",ev.clientX, ev.clientY)
     console.log(isDown2)
     document.addEventListener('mousemove', mouseMoveHandler2)
@@ -61,9 +62,9 @@ export default function Sqre({
     // if (isDown2) {
     // console.log(bottom-ev.clientY)
     // setBottom(prevCount => prevCount +ev.clientY)
-    // console.log('bottom', bottom)
-    console.log(ev.y)
-    console.log(top + height)
+    console.log('bottom', bottom)
+    console.log(ev.clientY)
+    // console.log(top + height)
 
     // console.log('hola')
     // }
@@ -144,6 +145,9 @@ export default function Sqre({
           // translate: (moveX, moveY)
         }}
       ></div>
+      {grab && (
+        <div className="absolute top-full bottom-full left-full right-full"></div>
+      )}
       {grab && (
         <div
           // onMouseMove={mouseMoveHandler2}
