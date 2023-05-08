@@ -61,8 +61,9 @@ export default function Sqre({
     // if (isDown2) {
     // console.log(bottom-ev.clientY)
     // setBottom(prevCount => prevCount +ev.clientY)
-    console.log('bottom', bottom)
-    console.log(ev.movementY)
+    // console.log('bottom', bottom)
+    console.log(ev.y)
+    console.log(top + height)
 
     // console.log('hola')
     // }
