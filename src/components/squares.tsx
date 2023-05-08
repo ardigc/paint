@@ -1,5 +1,4 @@
 import { useState, MouseEventHandler, useRef, ReactElement } from 'react'
-import { debounce } from '../helpers/debounce'
 export default function Sqre({
   top,
   left,
@@ -29,7 +28,6 @@ export default function Sqre({
     x: 0,
     y: 0,
   })
-  const [grab, setGrab] = useState(false)
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
@@ -46,7 +44,6 @@ export default function Sqre({
       setMove({ x: ev.clientX, y: ev.clientY })
     }
   }
-  const debouncedMouseMoveHandler = debounce(mouseMoveHandler, 10)
   const mouseDownHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
     setCoord({ x: ev.clientX, y: ev.clientY })
@@ -54,14 +51,12 @@ export default function Sqre({
     setIsDown(true)
 
     // fn(index, left, top)
-    document.addEventListener('mousemove', mouseMoveHandler2)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
   }
 
-  const mouseMoveHandler2 = (ev: MouseEvent) => {
+  const mouseMoveHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
-      // setMove({ x: ev.clientX, y: ev.clientY })
-      console.log(ev.clientX + '  ' + ev.clientY)
+      setMove({ x: ev.clientX, y: ev.clientY })
     }
   }
   const mouseUpHandler = () => {
@@ -70,6 +65,7 @@ export default function Sqre({
     setMove({ x: 0, y: 0 })
     setIsDown(false)
   }
+  const [grab, setGrab] = useState(false)
   let zindex: number
   let cursor: string
   let moveX = 0
@@ -98,7 +94,7 @@ export default function Sqre({
 
   return (
     <div
-      onFocus={() => setGrab(true)}
+      onClick={() => setGrab(true)}
       ref={myRef}
       onBlur={(event) => {
         if (myRef.current !== null) {
@@ -115,7 +111,7 @@ export default function Sqre({
     >
       <div
         onMouseDown={mouseDownHandler}
-        onMouseMove={debouncedMouseMoveHandler}
+        onMouseMove={mouseMoveHandler}
         onMouseUp={mouseUpHandler2}
         className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl"
         id="div"
@@ -133,7 +129,7 @@ export default function Sqre({
       {grab && (
         <div
           onMouseDown={mouseDownHandler2}
-          // onMouseMove={mouseMoveHandler2}
+          onMouseMove={mouseMoveHandler2}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
           className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
