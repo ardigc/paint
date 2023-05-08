@@ -44,6 +44,21 @@ export default function Sqre({
       setMove({ x: ev.clientX, y: ev.clientY })
     }
   }
+  const mouseDownHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
+    console.log('Mouse down')
+    setCoord({ x: ev.clientX, y: ev.clientY })
+    setMove({ x: ev.clientX, y: ev.clientY })
+    setIsDown(true)
+
+    // fn(index, left, top)
+    document.addEventListener('mouseup', mouseUpHandler, { once: true })
+  }
+
+  const mouseMoveHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
+    if (isDown) {
+      setMove({ x: ev.clientX, y: ev.clientY })
+    }
+  }
   const mouseUpHandler = () => {
     console.log('Mouse up')
     setCoord({ x: 0, y: 0 })
@@ -59,7 +74,7 @@ export default function Sqre({
   if (grab) {
     moveX = move.x - coord.x
     moveY = move.y - coord.y
-    console.log(top + ' (' + move.x + ' - ' + coord.x + ')')
+    // console.log(top + ' (' + move.x + ' - ' + coord.x + ')')
     top = top + moveY
     left = left + moveX
     zindex = 20
@@ -113,6 +128,8 @@ export default function Sqre({
       ></div>
       {grab && (
         <div
+          onMouseDown={mouseDownHandler2}
+          onMouseMove={mouseMoveHandler2}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
           className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
