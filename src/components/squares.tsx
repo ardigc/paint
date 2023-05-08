@@ -45,19 +45,26 @@ export default function Sqre({
     }
   }
   const mouseDownHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
-    console.log('Mouse down')
-    setCoord({ x: ev.clientX, y: ev.clientY })
-    setMove({ x: ev.clientX, y: ev.clientY })
+    console.log('Mouse down2')
+    // setCoord({ x: ev.clientX, y: ev.clientY })
+    // setMove({ x: ev.clientX, y: ev.clientY })
     setIsDown(true)
-
+    document.addEventListener('mousemove', mouseMoveHandler2)
     // fn(index, left, top)
-    document.addEventListener('mouseup', mouseUpHandler, { once: true })
+    document.addEventListener('mouseup', mouseUpHandler3, { once: true })
   }
 
-  const mouseMoveHandler2: MouseEventHandler<HTMLImageElement> = (ev) => {
+  const mouseMoveHandler2 = (ev: MouseEvent) => {
     if (isDown) {
-      setMove({ x: ev.clientX, y: ev.clientY })
+      console.log('hola')
+      console.log(ev.clientX, ev.clientY)
     }
+  }
+  const mouseUpHandler3 = () => {
+    console.log('Mouse up3')
+    // setCoord({ x: 0, y: 0 })
+    // setMove({ x: 0, y: 0 })
+    setIsDown(false)
   }
   const mouseUpHandler = () => {
     console.log('Mouse up')
@@ -129,7 +136,7 @@ export default function Sqre({
       {grab && (
         <div
           onMouseDown={mouseDownHandler2}
-          onMouseMove={mouseMoveHandler2}
+          // onMouseMove={mouseMoveHandler2}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
           className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
