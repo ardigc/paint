@@ -54,25 +54,21 @@ export default function Sqre({
     setBottom(ev.clientY)
     // console.log("origin",ev.clientX, ev.clientY)
     console.log(isDown2)
-    document.addEventListener('mousemove', mouseMoveHandler2)
-    document.addEventListener('mouseup', mouseUpHandler3, { once: true })
   }
 
-  const mouseMoveHandler2 = (ev: MouseEvent) => {
-    // if (isDown2) {
-    // console.log(bottom-ev.clientY)
-    // setBottom(prevCount => prevCount +ev.clientY)
-    console.log('bottom', bottom)
-    console.log(ev.clientY)
-    // console.log(top + height)
+  const mouseMoveHandler2: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (isDown2) {
+      // console.log(bottom-ev.clientY)
+      // setBottom(prevCount => prevCount +ev.clientY)
+      console.log('bottom', bottom)
+      console.log(ev.clientY)
+      // console.log(top + height)
 
-    // console.log('hola')
-    // }
+      // console.log('hola')
+    }
   }
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
-
-    document.removeEventListener('mousemove', mouseMoveHandler2)
 
     // setCoord({ x: 0, y: 0 })
     // setMove({ x: 0, y: 0 })
@@ -146,7 +142,11 @@ export default function Sqre({
         }}
       ></div>
       {grab && (
-        <div className="absolute top-full bottom-full left-full right-full"></div>
+        <div
+          className="absolute top-0 bottom-0 left-0 right-0"
+          onMouseMove={mouseMoveHandler2}
+          onMouseUp={mouseUpHandler3}
+        ></div>
       )}
       {grab && (
         <div
