@@ -48,7 +48,11 @@ export default function Sqre({
 
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
-      setMove({ x: ev.clientX, y: ev.clientY })
+      if (top >= 0) {
+        setMove({ x: ev.clientX, y: ev.clientY })
+      } else {
+        setMove({ x: ev.clientX, y: move.y })
+      }
     }
   }
   const mouseUpHandler = () => {
@@ -101,6 +105,7 @@ export default function Sqre({
   }
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
+
     fn(index, left, top, height, width)
     setIsDown(false)
     setSize({ top: 0, left: 0, width: 0, height: 0 })
@@ -113,9 +118,22 @@ export default function Sqre({
   let moveY = 0
 
   if (grab) {
+    // console.log("top", top)
+    // Aqui top es negatrivo cuando suelto
+    if (top < 1) {
+      top = 1
+    }
+    if (top >= 0) {
+      moveY = move.y - coord.y
+      top = top + moveY
+      console.log(top)
+    } else {
+      top = 1
+    }
     moveX = move.x - coord.x
-    moveY = move.y - coord.y
-    top = top + moveY
+
+    // console.log("top swuare:",top)
+
     left = left + moveX
     // console.log('heigt1', height)
 
@@ -142,7 +160,6 @@ export default function Sqre({
     fn(index, left, top, height, width)
     setIsDown(false)
   }
-
   return (
     <div
       onClick={() => setGrab(true)}

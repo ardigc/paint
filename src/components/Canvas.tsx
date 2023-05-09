@@ -33,6 +33,12 @@ export default function Canvas({ url }: { url: string }) {
       setSize({ width: 0, height: 0 })
       setCoord({ x: 0, y: 0 })
       setCoord({ x: ev.clientX - rect.x, y: ev.clientY - rect.y })
+      console.log('Top', rect.top)
+      console.log('Left', rect.left)
+      console.log('Bottom', rect.bottom)
+      console.log('Right', rect.right)
+      console.log('Height', rect.height)
+      console.log('Width', rect.width)
       setIsDown(true)
       const sqr = {
         top: top,
@@ -114,8 +120,8 @@ export default function Canvas({ url }: { url: string }) {
     setHeight(0)
     setTop(0)
   }
-  console.log(sqrArr)
-  console.log(top)
+  // console.log(sqrArr)
+  // console.log(top)
   // console.log(top+"  "+left)
   return (
     <div>
