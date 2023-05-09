@@ -81,13 +81,13 @@ export default function Canvas({ url }: { url: string }) {
       sqrArrCopy[index].top = movX
       sqrArrCopy[index].left = movY
       sqrArrCopy[index].height = height
-      // sqrArrCopy[index].width = width
+      sqrArrCopy[index].width = width
       setSqrArr(sqrArrCopy)
     } else {
       setTop(movX)
       setLeft(movY)
       setHeight(height)
-      // setWidth(width)
+      setWidth(width)
     }
     setCounter(counter + 1)
   }

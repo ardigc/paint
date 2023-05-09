@@ -17,9 +17,9 @@ export default function Sqre({
   // setCounter: any
 }) {
   const [isDown, setIsDown] = useState(false)
-  const [isDown2, setIsDown2] = useState(false)
+  const [isDown2, setIsDown2] = useState(0)
 
-  const [bottom, setBottom] = useState(0)
+  const [vari, setVari] = useState(0)
   const myRef = useRef<HTMLDivElement | null>(null)
 
   const [move, setMove] = useState<{ x: number; y: number }>({
@@ -59,21 +59,52 @@ export default function Sqre({
   }
   const mouseDownhandlerBottom: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down2')
-    setIsDown2(true)
-    setBottom(ev.clientY)
+    setIsDown2(1)
+    setVari(ev.clientY)
+  }
+  const mouseDownhandlerUp: MouseEventHandler<HTMLImageElement> = (ev) => {
+    console.log('Mouse down2')
+    setIsDown2(2)
+    setVari(ev.clientY)
+  }
+  const mouseDownhandlerWidth: MouseEventHandler<HTMLImageElement> = (ev) => {
+    console.log('Mouse down2')
+    setIsDown2(3)
+    setVari(ev.clientX)
+  }
+  const mouseDownhandlerLeft: MouseEventHandler<HTMLImageElement> = (ev) => {
+    console.log('Mouse down2')
+    setIsDown2(4)
+    setVari(ev.clientX)
   }
 
   const mouseMoveHandlerBottom: MouseEventHandler<HTMLDivElement> = (ev) => {
-    if (isDown2) {
-      setSize({ top: 0, left: 0, width: 0, height: bottom - ev.clientY })
+    if (isDown2 === 1) {
+      setSize({ top: 0, left: 0, width: 0, height: vari - ev.clientY })
+    } else if (isDown2 === 2) {
+      setSize({
+        top: vari - ev.clientY,
+        left: 0,
+        width: 0,
+        height: ev.clientY - vari,
+      })
+    } else if (isDown2 === 3) {
+      setSize({ top: 0, left: 0, width: ev.clientX - vari, height: 0 })
+    } else if (isDown2 === 4) {
+      setSize({
+        top: 0,
+        left: ev.clientX - vari,
+        width: vari - ev.clientX,
+        height: 0,
+      })
     }
   }
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
-    fn(index, left, top, height)
+    fn(index, left, top, height, width)
     setIsDown(false)
     setSize({ top: 0, left: 0, width: 0, height: 0 })
-    setIsDown2(false)
+    setIsDown2(0)
   }
   const [grab, setGrab] = useState(false)
   let zindex: number
@@ -86,10 +117,21 @@ export default function Sqre({
     moveY = move.y - coord.y
     top = top + moveY
     left = left + moveX
-    console.log('heigt1', height)
-    height = height - size.height
-    console.log('size', size.height)
-    console.log('height2', height - size.height)
+    // console.log('heigt1', height)
+
+    if (isDown2 === 4) {
+      left = left - size.width
+      width = width + size.width
+    } else if (isDown2 === 3) {
+      width = width + size.width
+    } else if (isDown2 === 1) {
+      height = height - size.height
+    } else if (isDown2 === 2) {
+      top = top - size.top
+      height = height - size.height
+    }
+    // console.log('size', size.height)
+    // console.log('height2', height - size.height)
     zindex = 15
     cursor = 'move'
   } else {
@@ -97,7 +139,7 @@ export default function Sqre({
     cursor = 'default'
   }
   const mouseUpHandler2 = () => {
-    fn(index, left, top, height)
+    fn(index, left, top, height, width)
     setIsDown(false)
   }
 
@@ -135,7 +177,7 @@ export default function Sqre({
           // translate: (moveX, moveY)
         }}
       ></div>
-      {isDown2 && (
+      {isDown2 !== 0 && (
         <div
           className="absolute top-0 bottom-0 left-0 right-0 z-30"
           onMouseMove={mouseMoveHandlerBottom}
@@ -144,19 +186,16 @@ export default function Sqre({
       )}
       {grab && (
         <div
-          // onMouseMove={mouseMoveHandler2}
-          // onClick={() => setGrab(true)}
-          // onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
+          onMouseDown={mouseDownhandlerLeft}
+          className="h-3 w-3 bg-slate-300 absolute z-20 cursor-grab active:cursor-grabbing"
           style={{ top: top + height / 2, left: left - 5 }}
           tabIndex={1}
         ></div>
       )}
       {grab && (
         <div
-          // onClick={() => setGrab(true)}
-          // onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
+          onMouseDown={mouseDownhandlerWidth}
+          className="h-3 w-3 bg-slate-300 absolute z-20 cursor-grab active:cursor-grabbing"
           style={{ top: top + height / 2, left: left + width - 5 }}
           tabIndex={1}
         ></div>
@@ -164,8 +203,6 @@ export default function Sqre({
       {grab && (
         <div
           onMouseDown={mouseDownhandlerBottom}
-          // onClick={() => setGrab(true)}
-          // onBlur={() => setGrab(false)}
           className="h-3 w-3 bg-slate-300 absolute z-20 cursor-grab active:cursor-grabbing"
           style={{ top: top + height - 5, left: left + width / 2 }}
           tabIndex={1}
@@ -173,9 +210,8 @@ export default function Sqre({
       )}
       {grab && (
         <div
-          // onClick={() => setGrab(true)}
-          // onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
+          onMouseDown={mouseDownhandlerUp}
+          className="h-3 w-3 bg-slate-300 absolute z-20 cursor-grab active:cursor-grabbing"
           style={{ top: top - 5, left: left + width / 2 }}
           tabIndex={1}
         ></div>
