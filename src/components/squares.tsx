@@ -48,11 +48,21 @@ export default function Sqre({
 
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown) {
-      if (top >= 0) {
+      if (top >= 0 && left >= 0) {
         setMove({ x: ev.clientX, y: ev.clientY })
-      } else {
+      } else if (left >= 0 && top < 0) {
         setMove({ x: ev.clientX, y: move.y })
+      } else if (top >= 0 && left < 0) {
+        setMove({ x: move.x, y: ev.clientY })
+      } else {
+        setMove({ x: move.x, y: move.y })
       }
+
+      // if (left >= 0) {
+      //   setMove({ x: ev.clientX, y: ev.clientY })
+      // } else {
+      //   setMove({ x: move.x, y: ev.clientY })
+      // }
     }
   }
   const mouseUpHandler = () => {
@@ -130,12 +140,19 @@ export default function Sqre({
     } else {
       top = 1
     }
-    moveX = move.x - coord.x
+    if (left < 1) {
+      left = 1
+    }
+    if (left >= 0) {
+      moveX = move.x - coord.x
+      left = left + moveX
+      console.log(left)
+    } else {
+      left = 1
+    }
 
-    // console.log("top swuare:",top)
-
-    left = left + moveX
     // console.log('heigt1', height)
+    // console.log("top swuare:",top)
 
     if (isDown2 === 4) {
       left = left - size.width
