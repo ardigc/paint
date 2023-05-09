@@ -51,20 +51,43 @@ export default function Sqre({
 
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown && rect) {
-      if (top >= 0 && left >= 0 && top + height < rect.height) {
+      if (
+        top >= 0 &&
+        left >= 0 &&
+        top + height < rect.height &&
+        left + width < rect.width
+      ) {
         console.log('esto1')
         setMove({ x: ev.clientX, y: ev.clientY })
-      } else if (left >= 0 && top < 0 && top + height < rect.height) {
+      } else if (
+        left >= 0 &&
+        top < 0 &&
+        top + height < rect.height &&
+        left + width < rect.width
+      ) {
         console.log('esto2')
         setMove({ x: ev.clientX, y: move.y })
-      } else if (top >= 0 && left < 0 && top + height < rect.height) {
+      } else if (
+        top >= 0 &&
+        left < 0 &&
+        top + height < rect.height &&
+        left + width < rect.width
+      ) {
         console.log('esto3')
         setMove({ x: move.x, y: ev.clientY })
-        // } else if (left >= 0 && top < 0) {
-        //   setMove({ x: ev.clientX, y: move.y })
-      } else if (top + height >= rect.height && left > 0) {
+      } else if (
+        top + height >= rect.height &&
+        left > 0 &&
+        left + width < rect.width
+      ) {
         console.log('esto4')
         setMove({ x: ev.clientX, y: move.y })
+      } else if (
+        left + width >= rect.width &&
+        top > 0 &&
+        top + height < rect.height
+      ) {
+        setMove({ x: move.x, y: ev.clientY })
       } else {
         console.log('esto?')
         setMove({ x: move.x, y: move.y })
@@ -143,6 +166,9 @@ export default function Sqre({
     }
     if (rect && top + height >= rect.height) {
       top = rect.height - height - 1
+    }
+    if (rect && left + width >= rect.width) {
+      left = rect.width - width - 1
     }
     if (top >= 0) {
       moveY = move.y - coord.y
