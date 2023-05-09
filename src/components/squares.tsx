@@ -52,17 +52,21 @@ export default function Sqre({
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown && rect) {
       if (top >= 0 && left >= 0 && top + height < rect.height) {
+        console.log('esto1')
         setMove({ x: ev.clientX, y: ev.clientY })
       } else if (left >= 0 && top < 0 && top + height < rect.height) {
+        console.log('esto2')
         setMove({ x: ev.clientX, y: move.y })
       } else if (top >= 0 && left < 0 && top + height < rect.height) {
+        console.log('esto3')
         setMove({ x: move.x, y: ev.clientY })
         // } else if (left >= 0 && top < 0) {
         //   setMove({ x: ev.clientX, y: move.y })
       } else if (top + height >= rect.height && left > 0) {
-        console.log('esto')
-        setMove({ x: move.x, y: ev.clientY })
+        console.log('esto4')
+        setMove({ x: ev.clientX, y: move.y })
       } else {
+        console.log('esto?')
         setMove({ x: move.x, y: move.y })
       }
       console.log(rect?.height)
@@ -136,6 +140,9 @@ export default function Sqre({
     // Aqui top es negatrivo cuando suelto
     if (top < 1) {
       top = 1
+    }
+    if (rect && top + height >= rect.height) {
+      top = rect.height - height - 1
     }
     if (top >= 0) {
       moveY = move.y - coord.y
