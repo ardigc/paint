@@ -80,13 +80,13 @@ export default function Canvas({ url }: { url: string }) {
       const sqrArrCopy = sqrArr
       sqrArrCopy[index].top = movX
       sqrArrCopy[index].left = movY
-      // sqrArrCopy[index].height = height
+      sqrArrCopy[index].height = height
       // sqrArrCopy[index].width = width
       setSqrArr(sqrArrCopy)
     } else {
       setTop(movX)
       setLeft(movY)
-      // setHeight(height)
+      setHeight(height)
       // setWidth(width)
     }
     setCounter(counter + 1)
@@ -109,9 +109,13 @@ export default function Canvas({ url }: { url: string }) {
     setSqrArr([{ top: 0, left: 0, width: 0, height: 0, index: 0 }])
     setSize({ width: 0, height: 0 })
     setCoord({ x: 0, y: 0 })
+    setLeft(0)
+    setWidth(0)
+    setHeight(0)
+    setTop(0)
   }
   console.log(sqrArr)
-  console.log('Ahora se renderiza')
+  console.log(top)
   // console.log(top+"  "+left)
   return (
     <div>

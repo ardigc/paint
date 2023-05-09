@@ -36,15 +36,13 @@ export default function Sqre({
     left: number
     height: number
     width: number
-  }>({ top: top, left: left, height: height, width: width })
+  }>({ top: 0, left: 0, height: 0, width: 0 })
 
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
     setCoord({ x: ev.clientX, y: ev.clientY })
     setMove({ x: ev.clientX, y: ev.clientY })
     setIsDown(true)
-
-    // fn(index, left, top)
     document.addEventListener('mouseup', mouseUpHandler, { once: true })
   }
 
@@ -53,40 +51,29 @@ export default function Sqre({
       setMove({ x: ev.clientX, y: ev.clientY })
     }
   }
-  const mouseDownhandlerbottom: MouseEventHandler<HTMLImageElement> = (ev) => {
-    console.log('Mouse down2')
-    setIsDown2(true)
-    console.log(bottom)
-    setBottom(ev.clientY)
-    // console.log("origin",ev.clientX, ev.clientY)
-    console.log(isDown2)
-  }
-
-  const mouseMoveHandler2: MouseEventHandler<HTMLDivElement> = (ev) => {
-    if (isDown2) {
-      // console.log(bottom-ev.clientY)
-      // setBottom(prevCount => prevCount +ev.clientY)
-      let sizeCopy = size
-      sizeCopy.height = bottom - ev.clientY
-      setSize(sizeCopy)
-      console.log('size', size)
-      // console.log(top + height)
-
-      // console.log('hola')
-    }
-  }
-  const mouseUpHandler3 = () => {
-    console.log('Mouse up3')
-
-    // setCoord({ x: 0, y: 0 })
-    // setMove({ x: 0, y: 0 })
-    setIsDown2(false)
-  }
   const mouseUpHandler = () => {
     console.log('Mouse up')
     setCoord({ x: 0, y: 0 })
     setMove({ x: 0, y: 0 })
     setIsDown(false)
+  }
+  const mouseDownhandlerBottom: MouseEventHandler<HTMLImageElement> = (ev) => {
+    console.log('Mouse down2')
+    setIsDown2(true)
+    setBottom(ev.clientY)
+  }
+
+  const mouseMoveHandlerBottom: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (isDown2) {
+      setSize({ top: 0, left: 0, width: 0, height: bottom - ev.clientY })
+    }
+  }
+  const mouseUpHandler3 = () => {
+    console.log('Mouse up3')
+    fn(index, left, top, height)
+    setIsDown(false)
+    setSize({ top: 0, left: 0, width: 0, height: 0 })
+    setIsDown2(false)
   }
   const [grab, setGrab] = useState(false)
   let zindex: number
@@ -97,27 +84,21 @@ export default function Sqre({
   if (grab) {
     moveX = move.x - coord.x
     moveY = move.y - coord.y
-    // console.log(top + ' (' + move.x + ' - ' + coord.x + ')')
     top = top + moveY
     left = left + moveX
-    // width=size.width
-    console.log(height)
-    // height=height-size.height
-    console.log(height)
-
+    console.log('heigt1', height)
+    height = height - size.height
+    console.log('size', size.height)
+    console.log('height2', height - size.height)
     zindex = 15
     cursor = 'move'
   } else {
     zindex = 0
     cursor = 'default'
   }
-  // console.log("Movey "+move.y)
-  // console.log("corrdx "+coord.x)
-  // console.log("Coordy "+coord.y)
   const mouseUpHandler2 = () => {
     fn(index, left, top, height)
     setIsDown(false)
-    // setCounter(Math.random)
   }
 
   return (
@@ -154,10 +135,10 @@ export default function Sqre({
           // translate: (moveX, moveY)
         }}
       ></div>
-      {grab && (
+      {isDown2 && (
         <div
           className="absolute top-0 bottom-0 left-0 right-0 z-30"
-          onMouseMove={mouseMoveHandler2}
+          onMouseMove={mouseMoveHandlerBottom}
           onMouseUp={mouseUpHandler3}
         ></div>
       )}
@@ -182,10 +163,10 @@ export default function Sqre({
       )}
       {grab && (
         <div
-          onMouseDown={mouseDownhandlerbottom}
+          onMouseDown={mouseDownhandlerBottom}
           // onClick={() => setGrab(true)}
           // onBlur={() => setGrab(false)}
-          className="h-3 w-3 bg-slate-300 absolute z-30 cursor-grab active:cursor-grabbing"
+          className="h-3 w-3 bg-slate-300 absolute z-20 cursor-grab active:cursor-grabbing"
           style={{ top: top + height - 5, left: left + width / 2 }}
           tabIndex={1}
         ></div>
