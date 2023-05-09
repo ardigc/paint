@@ -1,4 +1,4 @@
-import { useState, MouseEventHandler, useRef, ReactElement } from 'react'
+import { useState, MouseEventHandler, useRef } from 'react'
 export default function Sqre({
   top,
   left,
@@ -6,6 +6,7 @@ export default function Sqre({
   height,
   index,
   fn,
+  rect,
 }: // setCounter,
 {
   top: number
@@ -14,6 +15,8 @@ export default function Sqre({
   height: number
   index: number
   fn: any
+  rect: DOMRect | undefined
+
   // setCounter: any
 }) {
   const [isDown, setIsDown] = useState(false)
@@ -47,22 +50,23 @@ export default function Sqre({
   }
 
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    if (isDown) {
-      if (top >= 0 && left >= 0) {
+    if (isDown && rect) {
+      if (top >= 0 && left >= 0 && top + height < rect.height) {
         setMove({ x: ev.clientX, y: ev.clientY })
-      } else if (left >= 0 && top < 0) {
+      } else if (left >= 0 && top < 0 && top + height < rect.height) {
         setMove({ x: ev.clientX, y: move.y })
-      } else if (top >= 0 && left < 0) {
+      } else if (top >= 0 && left < 0 && top + height < rect.height) {
+        setMove({ x: move.x, y: ev.clientY })
+        // } else if (left >= 0 && top < 0) {
+        //   setMove({ x: ev.clientX, y: move.y })
+      } else if (top + height >= rect.height && left > 0) {
+        console.log('esto')
         setMove({ x: move.x, y: ev.clientY })
       } else {
         setMove({ x: move.x, y: move.y })
       }
-
-      // if (left >= 0) {
-      //   setMove({ x: ev.clientX, y: ev.clientY })
-      // } else {
-      //   setMove({ x: move.x, y: ev.clientY })
-      // }
+      console.log(rect?.height)
+      console.log(top + height)
     }
   }
   const mouseUpHandler = () => {
@@ -136,7 +140,7 @@ export default function Sqre({
     if (top >= 0) {
       moveY = move.y - coord.y
       top = top + moveY
-      console.log(top)
+      // console.log(top)
     } else {
       top = 1
     }
@@ -146,7 +150,7 @@ export default function Sqre({
     if (left >= 0) {
       moveX = move.x - coord.x
       left = left + moveX
-      console.log(left)
+      // console.log(left)
     } else {
       left = 1
     }

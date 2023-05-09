@@ -139,6 +139,7 @@ export default function Canvas({ url }: { url: string }) {
           <Sqre
             {...it}
             fn={modMove}
+            rect={rect}
             //  setCounter={setCounter}
           />
         ))}
@@ -147,6 +148,7 @@ export default function Canvas({ url }: { url: string }) {
           left={left}
           height={height}
           width={width}
+          rect={rect}
           fn={modMove}
           // setCounter={setCounter}
           index={0}
