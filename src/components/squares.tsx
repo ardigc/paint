@@ -228,7 +228,7 @@ export default function Sqre({
         onMouseDown={mouseDownHandler}
         onMouseMove={mouseMoveHandler}
         onMouseUp={mouseUpHandler2}
-        className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl"
+        className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl overflow-hidden"
         id={squareName}
         tabIndex={0}
         style={{
