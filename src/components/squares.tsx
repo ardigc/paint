@@ -21,7 +21,7 @@ export default function Sqre({
 }) {
   const [isDown, setIsDown] = useState(false)
   const [isDown2, setIsDown2] = useState(0)
-
+  const [squareName, setSquareName] = useState('')
   const [vari, setVari] = useState(0)
   const myRef = useRef<HTMLDivElement | null>(null)
 
@@ -159,8 +159,6 @@ export default function Sqre({
   let moveY = 0
 
   if (grab) {
-    // console.log("top", top)
-    // Aqui top es negatrivo cuando suelto
     if (top < 1) {
       top = 1
     }
@@ -187,10 +185,6 @@ export default function Sqre({
     } else {
       left = 1
     }
-
-    // console.log('heigt1', height)
-    // console.log("top swuare:",top)
-
     if (isDown2 === 4) {
       left = left - size.width
       width = width + size.width
@@ -202,8 +196,7 @@ export default function Sqre({
       top = top - size.top
       height = height - size.height
     }
-    // console.log('size', size.height)
-    // console.log('height2', height - size.height)
+
     zindex = 15
     cursor = 'move'
   } else {
@@ -236,7 +229,7 @@ export default function Sqre({
         onMouseMove={mouseMoveHandler}
         onMouseUp={mouseUpHandler2}
         className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl"
-        id="div"
+        id={squareName}
         tabIndex={0}
         style={{
           top: top,
@@ -247,7 +240,17 @@ export default function Sqre({
           cursor: cursor,
           // translate: (moveX, moveY)
         }}
-      ></div>
+      >
+        {index !== 1 && index !== 0 && (
+          <label>
+            Nombre del cuadrado:
+            <input
+              value={squareName}
+              onChange={(e) => setSquareName(e.target.value)}
+            ></input>
+          </label>
+        )}
+      </div>
       {isDown2 !== 0 && (
         <div
           className="absolute top-0 bottom-0 left-0 right-0 z-30"

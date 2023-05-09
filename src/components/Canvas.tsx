@@ -26,7 +26,7 @@ export default function Canvas({ url }: { url: string }) {
       index: number
     }[]
   >([{ top: 0, left: 0, width: 0, height: 0, index: 0 }])
-
+  console.log(sqrArr)
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (rect) {
       console.log('Mouse down')
@@ -40,6 +40,7 @@ export default function Canvas({ url }: { url: string }) {
       console.log('Height', rect.height)
       console.log('Width', rect.width)
       setIsDown(true)
+
       const sqr = {
         top: top,
         left: left,
@@ -82,7 +83,7 @@ export default function Canvas({ url }: { url: string }) {
     height: number,
     width: number
   ) {
-    if (index !== 0) {
+    if (index !== -1) {
       const sqrArrCopy = sqrArr
       sqrArrCopy[index].top = movX
       sqrArrCopy[index].left = movY
@@ -151,7 +152,7 @@ export default function Canvas({ url }: { url: string }) {
           rect={rect}
           fn={modMove}
           // setCounter={setCounter}
-          index={0}
+          index={-1}
         />
       </div>
       <button
