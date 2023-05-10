@@ -1,5 +1,10 @@
 import { Square } from '../types'
-import { MouseEvent as ReactMouseEvent, useState } from 'react'
+import {
+  MouseEvent as ReactMouseEvent,
+  useState,
+  MouseEventHandler,
+  useRef,
+} from 'react'
 
 export type Direction = 'top' | 'right' | 'bottom' | 'left'
 
@@ -24,9 +29,39 @@ export function SquareDrawing({
   onResize,
   isPlaceholder,
 }: Props) {
-  const [isResizing, setIsResizing] = useState(false)
+  const [isSelected, setIsSelected] = useState(false)
+  const timeoutRef = useRef<number | null>(null)
 
-  const handleMouseDown = (e: ReactMouseEvent, direction: Direction) => {
+  const handleMouseDown: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (isPlaceholder) return
+    if (!timeoutRef.current) {
+      ev.stopPropagation()
+    }
+
+    if (!timeoutRef.current) {
+      const timeout = setTimeout(() => {
+        ev.target.dispatchEvent(new MouseEvent('mousedown', ev.nativeEvent))
+      }, 100)
+      timeoutRef.current = timeout
+    }
+  }
+
+  const handleMouseUp = () => {
+    if (isPlaceholder) return
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+  }
+
+  const handleMouseMove: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (isPlaceholder) return
+    if (isSelected) {
+      ev.stopPropagation()
+    }
+  }
+
+  const resizeHandleMouseDown = (e: ReactMouseEvent, direction: Direction) => {
     if (isPlaceholder) return
     e.stopPropagation()
     document.addEventListener('mousemove', handleMouseMove)
@@ -45,36 +80,7 @@ export function SquareDrawing({
     }
   }
 
-  const RenderHandle = ({ direction }: { direction: Direction }) => {
-    const getStyleCenteredAtDirection = () => {
-      switch (direction) {
-        case 'top':
-          return {
-            left: '50%',
-            top: 0,
-            transform: 'translate(-50%, -50%)',
-          }
-        case 'right':
-          return {
-            right: 0,
-            top: '50%',
-            transform: 'translate(50%, -50%)',
-          }
-        case 'bottom':
-          return {
-            left: '50%',
-            bottom: 0,
-            transform: 'translate(-50%, 50%)',
-          }
-        case 'left':
-          return {
-            left: 0,
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-          }
-      }
-    }
-
+  const ResizeHandle = ({ direction }: { direction: Direction }) => {
     return (
       <div
         className={'absolute bg-blue-500 cursor-grab active:cursor-grabbing'}
@@ -83,9 +89,9 @@ export function SquareDrawing({
           height: 8,
           margin: -4,
           zIndex: 10,
-          ...getStyleCenteredAtDirection(),
+          ...getStyleCenteredAtDirection(direction),
         }}
-        onMouseDown={(e) => handleMouseDown(e, direction)}
+        onMouseDown={(e) => resizeHandleMouseDown(e, direction)}
       />
     )
   }
@@ -94,22 +100,51 @@ export function SquareDrawing({
     <div
       className="bg-green-500 bg-opacity-50 border border-green-800 absolute select-none"
       style={{ left: x, top: y, width, height }}
-      onClick={(e) => {
-        if (isPlaceholder) return
-        setIsResizing(true)
-      }}
-      onBlur={() => setIsResizing(false)}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
+      onClick={() => setIsSelected(true)}
+      onBlur={() => setIsSelected(false)}
       tabIndex={0}
     >
       {name}
-      {isResizing && (
+      {isSelected && (
         <>
-          <RenderHandle direction="top" />
-          <RenderHandle direction="right" />
-          <RenderHandle direction="bottom" />
-          <RenderHandle direction="left" />
+          <ResizeHandle direction="top" />
+          <ResizeHandle direction="right" />
+          <ResizeHandle direction="bottom" />
+          <ResizeHandle direction="left" />
         </>
       )}
     </div>
   )
+}
+
+function getStyleCenteredAtDirection(direction: Direction) {
+  switch (direction) {
+    case 'top':
+      return {
+        left: '50%',
+        top: 0,
+        transform: 'translate(-50%, -50%)',
+      }
+    case 'right':
+      return {
+        right: 0,
+        top: '50%',
+        transform: 'translate(50%, -50%)',
+      }
+    case 'bottom':
+      return {
+        left: '50%',
+        bottom: 0,
+        transform: 'translate(-50%, 50%)',
+      }
+    case 'left':
+      return {
+        left: 0,
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+      }
+  }
 }
