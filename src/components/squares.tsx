@@ -1,4 +1,4 @@
-import { useState, MouseEventHandler, useRef } from 'react'
+import { useState, MouseEventHandler, useRef, useEffect } from 'react'
 export default function Sqre({
   top,
   left,
@@ -7,6 +7,7 @@ export default function Sqre({
   index,
   fn,
   rect,
+  sqrName,
 }: // setCounter,
 {
   top: number
@@ -14,6 +15,7 @@ export default function Sqre({
   width: number
   height: number
   index: number
+  sqrName: string
   fn: any
   rect: DOMRect | undefined
 
@@ -21,7 +23,7 @@ export default function Sqre({
 }) {
   const [isDown, setIsDown] = useState(false)
   const [isDown2, setIsDown2] = useState(0)
-  const [squareName, setSquareName] = useState('')
+  const [squareNameOr, setSquareNameOr] = useState(sqrName)
   const [vari, setVari] = useState(0)
   const myRef = useRef<HTMLDivElement | null>(null)
 
@@ -40,9 +42,16 @@ export default function Sqre({
     height: number
     width: number
   }>({ top: 0, left: 0, height: 0, width: 0 })
-
+  // setSquareNameOr("")
+  useEffect(() => {
+    fn(index, left, top, height, width, squareNameOr)
+  }, [squareNameOr])
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
+
+    console.log('mousedown name:', sqrName)
+    console.log('mousedown or: ', squareNameOr)
+    setSquareNameOr(sqrName)
     setCoord({ x: ev.clientX, y: ev.clientY })
     setMove({ x: ev.clientX, y: ev.clientY })
     setIsDown(true)
@@ -57,7 +66,7 @@ export default function Sqre({
         top + height < rect.height &&
         left + width < rect.width
       ) {
-        console.log('esto1')
+        // console.log('esto1')
         setMove({ x: ev.clientX, y: ev.clientY })
       } else if (
         left >= 0 &&
@@ -65,7 +74,7 @@ export default function Sqre({
         top + height < rect.height &&
         left + width < rect.width
       ) {
-        console.log('esto2')
+        // console.log('esto2')
         setMove({ x: ev.clientX, y: move.y })
       } else if (
         top >= 0 &&
@@ -73,14 +82,14 @@ export default function Sqre({
         top + height < rect.height &&
         left + width < rect.width
       ) {
-        console.log('esto3')
+        // console.log('esto3')
         setMove({ x: move.x, y: ev.clientY })
       } else if (
         top + height >= rect.height &&
         left > 0 &&
         left + width < rect.width
       ) {
-        console.log('esto4')
+        // console.log('esto4')
         setMove({ x: ev.clientX, y: move.y })
       } else if (
         left + width >= rect.width &&
@@ -89,17 +98,19 @@ export default function Sqre({
       ) {
         setMove({ x: move.x, y: ev.clientY })
       } else {
-        console.log('esto?')
+        // console.log('esto?')
         setMove({ x: move.x, y: move.y })
       }
-      console.log(rect?.height)
-      console.log(top + height)
+      // console.log(rect?.height)
+      // console.log(top + height)
     }
   }
   const mouseUpHandler = () => {
     console.log('Mouse up')
     setCoord({ x: 0, y: 0 })
     setMove({ x: 0, y: 0 })
+
+    // fn(index, left, top, height, width)
     setIsDown(false)
   }
   const mouseDownhandlerBottom: MouseEventHandler<HTMLImageElement> = (ev) => {
@@ -147,7 +158,7 @@ export default function Sqre({
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
 
-    fn(index, left, top, height, width)
+    fn(index, left, top, height, width, squareNameOr)
     setIsDown(false)
     setSize({ top: 0, left: 0, width: 0, height: 0 })
     setIsDown2(0)
@@ -204,7 +215,8 @@ export default function Sqre({
     cursor = 'default'
   }
   const mouseUpHandler2 = () => {
-    fn(index, left, top, height, width)
+    fn(index, left, top, height, width, squareNameOr)
+
     setIsDown(false)
   }
   return (
@@ -229,7 +241,7 @@ export default function Sqre({
         onMouseMove={mouseMoveHandler}
         onMouseUp={mouseUpHandler2}
         className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl overflow-hidden"
-        id={squareName}
+        id={squareNameOr}
         tabIndex={0}
         style={{
           top: top,
@@ -241,15 +253,13 @@ export default function Sqre({
           // translate: (moveX, moveY)
         }}
       >
-        {index !== 1 && index !== 0 && (
-          <label>
-            Nombre del cuadrado:
-            <input
-              value={squareName}
-              onChange={(e) => setSquareName(e.target.value)}
-            ></input>
-          </label>
-        )}
+        <label>
+          Nombre del cuadrado:
+          <input
+            value={sqrName}
+            onChange={(e) => setSquareNameOr(e.target.value)}
+          ></input>
+        </label>
       </div>
       {isDown2 !== 0 && (
         <div

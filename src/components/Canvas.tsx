@@ -1,5 +1,6 @@
 import { MouseEventHandler, useState, ReactEventHandler } from 'react'
 import Sqre from './squares'
+import Export from './Export'
 
 export default function Canvas({ url }: { url: string }) {
   const [isDown, setIsDown] = useState(false)
@@ -13,8 +14,7 @@ export default function Canvas({ url }: { url: string }) {
   const [left, setLeft] = useState(0)
   const [height, setHeight] = useState(0)
   const [width, setWidth] = useState(0)
-  // const ref = useRef<HTMLImageElement>(null)
-  // const imageRef = useRef(null);
+  const [sqrName, setSqrName] = useState('unnamed')
 
   const [rect, setRect] = useState<DOMRect>()
   const [sqrArr, setSqrArr] = useState<
@@ -24,29 +24,25 @@ export default function Canvas({ url }: { url: string }) {
       width: number
       height: number
       index: number
+      sqrName: string
     }[]
-  >([{ top: 0, left: 0, width: 0, height: 0, index: 0 }])
-  console.log(sqrArr)
+  >([{ top: 0, left: 0, width: 0, height: 0, index: 0, sqrName: '' }])
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (rect) {
       console.log('Mouse down')
       setSize({ width: 0, height: 0 })
       setCoord({ x: 0, y: 0 })
       setCoord({ x: ev.clientX - rect.x, y: ev.clientY - rect.y })
-      console.log('Top', rect.top)
-      console.log('Left', rect.left)
-      console.log('Bottom', rect.bottom)
-      console.log('Right', rect.right)
-      console.log('Height', rect.height)
-      console.log('Width', rect.width)
+      setSqrName('unnamed')
       setIsDown(true)
-
+      console.log(sqrArr)
       const sqr = {
         top: top,
         left: left,
         width: width,
         height: height,
         index: sqrArr.length,
+        sqrName: sqrName,
       }
       const sqrArrCopy = sqrArr
       sqrArrCopy?.push(sqr)
@@ -54,7 +50,6 @@ export default function Canvas({ url }: { url: string }) {
       document.addEventListener('mouseup', mouseUpHandler, { once: true })
     }
   }
-  // console.log(sqrArr)
   const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     if (isDown && rect) {
       setSize({
@@ -81,24 +76,27 @@ export default function Canvas({ url }: { url: string }) {
     movY: number,
     movX: number,
     height: number,
-    width: number
+    width: number,
+    sqrName: string
   ) {
+    console.log('modmove', sqrName)
     if (index !== -1) {
       const sqrArrCopy = sqrArr
       sqrArrCopy[index].top = movX
       sqrArrCopy[index].left = movY
       sqrArrCopy[index].height = height
       sqrArrCopy[index].width = width
+      sqrArrCopy[index].sqrName = sqrName
       setSqrArr(sqrArrCopy)
     } else {
       setTop(movX)
       setLeft(movY)
       setHeight(height)
       setWidth(width)
+      setSqrName(sqrName)
     }
     setCounter(counter + 1)
   }
-  // console.log(sqrArr[3])
 
   // const top = size.height < 0 ? coord.y + size.height : coord.y;
 
@@ -109,21 +107,18 @@ export default function Canvas({ url }: { url: string }) {
   }
   const mouseUpHandler = () => {
     console.log('Mouse up')
-
     setIsDown(false)
   }
   const clickHandle = () => {
-    setSqrArr([{ top: 0, left: 0, width: 0, height: 0, index: 0 }])
+    setSqrArr([{ top: 0, left: 0, width: 0, height: 0, index: 0, sqrName: '' }])
     setSize({ width: 0, height: 0 })
     setCoord({ x: 0, y: 0 })
     setLeft(0)
     setWidth(0)
     setHeight(0)
     setTop(0)
+    setSqrName('unnamed')
   }
-  // console.log(sqrArr)
-  // console.log(top)
-  // console.log(top+"  "+left)
   return (
     <div>
       <div className="relative" onMouseMove={mouseMoveHandler}>
@@ -151,6 +146,7 @@ export default function Canvas({ url }: { url: string }) {
           width={width}
           rect={rect}
           fn={modMove}
+          sqrName={sqrName}
           // setCounter={setCounter}
           index={-1}
         />
@@ -161,6 +157,14 @@ export default function Canvas({ url }: { url: string }) {
       >
         Limpiar cuadros
       </button>
+      <Export
+        sqrArr={sqrArr}
+        sqrName={sqrName}
+        top={top}
+        left={left}
+        height={height}
+        width={width}
+      />
     </div>
   )
 }
