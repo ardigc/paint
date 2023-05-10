@@ -17,6 +17,7 @@ interface Props extends Square {
     deltaX: number,
     deltaY: number
   ) => void
+  onMove?: (id: number, deltaX: number, deltaY: number) => void
 }
 
 export function SquareDrawing({
@@ -27,30 +28,60 @@ export function SquareDrawing({
   y,
   id,
   onResize,
+  onMove,
   isPlaceholder,
 }: Props) {
   const [isSelected, setIsSelected] = useState(false)
   const timeoutRef = useRef<number | null>(null)
 
-  const handleMouseDown: MouseEventHandler<HTMLDivElement> = (ev) => {
-    if (isPlaceholder) return
-    if (!timeoutRef.current) {
-      ev.stopPropagation()
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    let lastMouseX = e.clientX
+    let lastMouseY = e.clientY
+
+    const handleDrag = (e: MouseEvent) => {
+      const deltaX = e.clientX - lastMouseX
+      const deltaY = e.clientY - lastMouseY
+
+      onMove?.(id, deltaX, deltaY)
+      lastMouseX = e.clientX
+      lastMouseY = e.clientY
     }
 
-    if (!timeoutRef.current) {
+    const handleDragEnd = () => {
+      document.removeEventListener('mousemove', handleDrag)
+      document.removeEventListener('mouseup', handleDragEnd)
+    }
+
+    document.addEventListener('mousemove', handleDrag)
+    document.addEventListener('mouseup', handleDragEnd)
+  }
+
+  const handleMouseDown: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (isPlaceholder) return
+
+    if (!timeoutRef.current && !isSelected) {
+      ev.stopPropagation()
       const timeout = setTimeout(() => {
         ev.target.dispatchEvent(new MouseEvent('mousedown', ev.nativeEvent))
       }, 100)
       timeoutRef.current = timeout
     }
+
+    if (isSelected) {
+      ev.stopPropagation()
+      handleDragStart(ev)
+    }
   }
 
-  const handleMouseUp = () => {
+  const handleMouseUp: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (isPlaceholder) return
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
+    }
+    if (isSelected) {
+      ev.stopPropagation()
     }
   }
 

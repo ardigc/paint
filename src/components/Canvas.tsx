@@ -88,6 +88,20 @@ export default function Canvas({ url }: { url: string }) {
     })
   }
 
+  const handleSquareMove = (id: number, deltaX: number, deltaY: number) => {
+    const square = squares[id]
+    if (!square) return
+
+    const newLeft = Math.max(square.x + deltaX, 0)
+    const newTop = Math.max(square.y + deltaY, 0)
+
+    setSquares((prev) => {
+      const newSquares = [...prev]
+      newSquares[id] = { ...square, x: newLeft, y: newTop }
+      return newSquares
+    })
+  }
+
   const handleCleanSquares = () => {
     setSquares([])
   }
@@ -117,6 +131,7 @@ export default function Canvas({ url }: { url: string }) {
             name=""
             id={index}
             onResize={handleSquareResize}
+            onMove={handleSquareMove}
           />
         ))}
       </div>
