@@ -87,9 +87,6 @@ export function SquareDrawing({
 
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (isPlaceholder) return
-    if (isSelected) {
-      ev.stopPropagation()
-    }
   }
 
   const resizeHandleMouseDown = (e: ReactMouseEvent, direction: Direction) => {
