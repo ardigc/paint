@@ -20,9 +20,25 @@ export default function Export({
     sqrName: string
   }>
 }) {
+  const clickHandler = () => {
+    const lastSqr = {
+      top: top,
+      left: left,
+      width: width,
+      height: height,
+      index: sqrArr.length,
+      sqrName: sqrName,
+    }
+    const sqrArrCopy = sqrArr
+    sqrArrCopy?.push(lastSqr)
+    console.log(sqrArrCopy)
+  }
+
   return (
     <div>
-      <button className="bg-purple-100 rounded-lg">Export squares</button>
+      <button onClick={clickHandler} className="bg-purple-100 rounded-lg">
+        Export squares
+      </button>
     </div>
   )
 }
