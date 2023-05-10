@@ -37,7 +37,7 @@ export default function Export({
       const { index, ...arrayFinal } = sqr
       return arrayFinal
     })
-    let csv: any
+    let csv: any = ''
     for (let count = 1; count < arrayFinal.length; count++) {
       let keysAmount = Object.keys(arrayFinal[count]).length
       let keysCounter = 0
@@ -45,6 +45,7 @@ export default function Export({
         for (let key in arrayFinal[count]) {
           csv += key + (keysCounter + 1 < keysAmount ? ',' : '\r\n')
           keysCounter++
+          console.log(csv)
         }
       } else {
         for (let key in arrayFinal[count]) {
