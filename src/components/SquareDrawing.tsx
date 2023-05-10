@@ -80,9 +80,6 @@ export function SquareDrawing({
       clearTimeout(timeoutRef.current)
       timeoutRef.current = null
     }
-    if (isSelected) {
-      ev.stopPropagation()
-    }
   }
 
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (ev) => {
