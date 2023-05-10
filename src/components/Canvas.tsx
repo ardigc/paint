@@ -2,14 +2,14 @@ import { MouseEventHandler, useState, ReactEventHandler } from 'react'
 import { Square } from '../types'
 import { SquareDrawing } from './SquareDrawing'
 
+type Placeholder = Omit<Square, 'name'> | null
+type Pivot = Pick<Square, 'x' | 'y'> | null
+
 export default function Canvas({ url }: { url: string }) {
-  const [isDrawing, setIsDrawing] = useState(false)
   const [rect, setRect] = useState<DOMRect>()
   const [squares, setSquares] = useState<Square[]>([])
-  const [placeholderSquare, setPlaceholderSquare] = useState<
-    // Omit es un typo de ayuda de typescript que permite omitir una propiedad de un tipo
-    Omit<Square, 'name'>
-  >({ x: 0, y: 0, width: 0, height: 0 })
+  const [pivot, setPivot] = useState<Pivot>(null)
+  const [placeholder, setPlaceholder] = useState<Placeholder>(null)
 
   const loadHandler: ReactEventHandler<HTMLImageElement> = (ev) => {
     const parentDiv = ev.currentTarget.parentElement
@@ -17,41 +17,34 @@ export default function Canvas({ url }: { url: string }) {
     setRect(rect)
   }
 
-  const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
+  const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!rect) return
-    setIsDrawing(true)
-    const { x, y } = rect
+    const { left, top } = rect
     const { clientX, clientY } = ev
-    const top = clientY - y
-    const left = clientX - x
-    setPlaceholderSquare({ x: top, y: left, width: 0, height: 0 })
+    const squareX = clientX - left
+    const squareY = clientY - top
+    setPivot({ x: squareX, y: squareY })
   }
 
-  const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    if (!rect) return
-    if (!isDrawing) return
-    const { x, y } = rect
+  const mouseMoveHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (!rect || !pivot) return
     const { clientX, clientY } = ev
-    const top = clientY - y
-    const left = clientX - x
-    const width = left - placeholderSquare.x
-    const height = top - placeholderSquare.y
-    setPlaceholderSquare((prev) => ({ ...prev, width, height }))
+    const mouseX = clientX - rect.left
+    const mouseY = clientY - rect.top
+
+    const width = Math.abs(mouseX - pivot.x)
+    const height = Math.abs(mouseY - pivot.y)
+
+    const left = mouseX < pivot.x ? mouseX : pivot.x
+    const top = mouseY < pivot.y ? mouseY : pivot.y
+    setPlaceholder({ x: left, y: top, width, height })
   }
 
-  const mouseUpHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    if (!rect) return
-    setIsDrawing(false)
-    const { x, y } = rect
-    const { clientX, clientY } = ev
-    const top = clientY - y
-    const left = clientX - x
-    const width = left - placeholderSquare.x
-    const height = top - placeholderSquare.y
-    setSquares((prev) => [
-      ...prev,
-      { ...placeholderSquare, width, height, name: '' },
-    ])
+  const mouseUpHandler = () => {
+    if (!rect || !placeholder) return
+    setSquares((prev) => [...prev, { ...placeholder, name: '' }])
+    setPlaceholder(null)
+    setPivot(null)
   }
 
   const handleCleanSquares = () => {
@@ -65,6 +58,7 @@ export default function Canvas({ url }: { url: string }) {
         onMouseMove={mouseMoveHandler}
         onMouseDown={mouseDownHandler}
         onMouseUp={mouseUpHandler}
+        onMouseLeave={mouseUpHandler}
       >
         <img
           draggable={false}
@@ -72,8 +66,15 @@ export default function Canvas({ url }: { url: string }) {
           src={url}
           className="select-none"
         />
-        <div />
-        {isDrawing && <SquareDrawing {...placeholderSquare} name="" />}
+        {placeholder && <SquareDrawing {...placeholder} name="" id={0} />}
+        {squares.map((square, index) => (
+          <SquareDrawing
+            key={`Square-${index}`}
+            {...square}
+            name=""
+            id={index}
+          />
+        ))}
       </div>
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"
