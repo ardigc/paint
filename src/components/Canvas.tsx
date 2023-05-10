@@ -53,30 +53,30 @@ export default function Canvas({ url }: { url: string }) {
     deltaX: number,
     deltaY: number
   ) => {
-    const square = squares[id]
-    if (!square) return
-
-    let newWidth = square.width
-    let newHeight = square.height
-    let newLeft = square.x
-    let newTop = square.y
-
-    if (direction === 'top') {
-      newHeight = Math.max(square.height - deltaY, 0)
-      newTop = square.y + (square.height - newHeight)
-    } else if (direction === 'bottom') {
-      newHeight = Math.max(square.height + deltaY, 0)
-    }
-
-    if (direction === 'left') {
-      newWidth = Math.max(square.width - deltaX, 0)
-      newLeft = square.x + (square.width - newWidth)
-    } else if (direction === 'right') {
-      newWidth = Math.max(square.width + deltaX, 0)
-    }
-
     setSquares((prev) => {
       const newSquares = [...prev]
+      const square = newSquares[id]
+      if (!square) return newSquares
+
+      let newWidth = square.width
+      let newHeight = square.height
+      let newLeft = square.x
+      let newTop = square.y
+
+      if (direction === 'top') {
+        newHeight = Math.max(square.height - deltaY, 0)
+        newTop = square.y + (square.height - newHeight)
+      } else if (direction === 'bottom') {
+        newHeight = Math.max(square.height + deltaY, 0)
+      }
+
+      if (direction === 'left') {
+        newWidth = Math.max(square.width - deltaX, 0)
+        newLeft = square.x + (square.width - newWidth)
+      } else if (direction === 'right') {
+        newWidth = Math.max(square.width + deltaX, 0)
+      }
+
       newSquares[id] = {
         ...square,
         width: newWidth,
@@ -89,14 +89,14 @@ export default function Canvas({ url }: { url: string }) {
   }
 
   const handleSquareMove = (id: number, deltaX: number, deltaY: number) => {
-    const square = squares[id]
-    if (!square) return
-
-    const newLeft = Math.max(square.x + deltaX, 0)
-    const newTop = Math.max(square.y + deltaY, 0)
-
     setSquares((prev) => {
       const newSquares = [...prev]
+      const square = newSquares[id]
+      if (!square) return newSquares
+
+      const newLeft = Math.max(square.x + deltaX, 0)
+      const newTop = Math.max(square.y + deltaY, 0)
+
       newSquares[id] = { ...square, x: newLeft, y: newTop }
       return newSquares
     })
