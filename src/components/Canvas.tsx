@@ -41,10 +41,10 @@ export default function Canvas({ url }: { url: string }) {
   }
 
   const mouseUpHandler = () => {
+    setPivot(null)
     if (!rect || !placeholder) return
     setSquares((prev) => [...prev, { ...placeholder, name: '' }])
     setPlaceholder(null)
-    setPivot(null)
   }
 
   const handleSquareResize = (
