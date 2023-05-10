@@ -1,6 +1,6 @@
 import { MouseEventHandler, useState, ReactEventHandler } from 'react'
 import { Square } from '../types'
-import { SquareDrawing } from './SquareDrawing'
+import { Direction, SquareDrawing } from './SquareDrawing'
 
 type Placeholder = Omit<Square, 'name'> | null
 type Pivot = Pick<Square, 'x' | 'y'> | null
@@ -47,6 +47,47 @@ export default function Canvas({ url }: { url: string }) {
     setPivot(null)
   }
 
+  const handleSquareResize = (
+    id: number,
+    direction: Direction,
+    deltaX: number,
+    deltaY: number
+  ) => {
+    const square = squares[id]
+    if (!square) return
+
+    let newWidth = square.width
+    let newHeight = square.height
+    let newLeft = square.x
+    let newTop = square.y
+
+    if (direction === 'top') {
+      newHeight = Math.max(square.height - deltaY, 0)
+      newTop = square.y + (square.height - newHeight)
+    } else if (direction === 'bottom') {
+      newHeight = Math.max(square.height + deltaY, 0)
+    }
+
+    if (direction === 'left') {
+      newWidth = Math.max(square.width - deltaX, 0)
+      newLeft = square.x + (square.width - newWidth)
+    } else if (direction === 'right') {
+      newWidth = Math.max(square.width + deltaX, 0)
+    }
+
+    setSquares((prev) => {
+      const newSquares = [...prev]
+      newSquares[id] = {
+        ...square,
+        width: newWidth,
+        height: newHeight,
+        x: newLeft,
+        y: newTop,
+      }
+      return newSquares
+    })
+  }
+
   const handleCleanSquares = () => {
     setSquares([])
   }
@@ -66,13 +107,16 @@ export default function Canvas({ url }: { url: string }) {
           src={url}
           className="select-none"
         />
-        {placeholder && <SquareDrawing {...placeholder} name="" id={0} />}
+        {placeholder && (
+          <SquareDrawing {...placeholder} name="" id={0} isPlaceholder />
+        )}
         {squares.map((square, index) => (
           <SquareDrawing
             key={`Square-${index}`}
             {...square}
             name=""
             id={index}
+            onResize={handleSquareResize}
           />
         ))}
       </div>
