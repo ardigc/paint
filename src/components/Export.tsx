@@ -64,8 +64,8 @@ export default function Export({
     )
     link.setAttribute('download', 'yourfiletextgoeshere.csv')
     document.body.appendChild(link)
-    // inspiracion https://stackoverflow.com/questions/44396943/generate-a-csv-file-from-a-javascript-array-of-objects
-    // document.querySelector('#download-csv').click()
+    link.click()
+    console.log(link)
     console.log(csv)
   }
 
