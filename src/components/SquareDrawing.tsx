@@ -95,20 +95,24 @@ export function SquareDrawing({
   const resizeHandleMouseDown = (e: ReactMouseEvent, direction: Direction) => {
     if (isPlaceholder) return
     e.stopPropagation()
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
+    let lastMouseX = e.clientX
+    let lastMouseY = e.clientY
 
     function handleMouseMove(e: MouseEvent) {
-      const deltaX = e.movementX
-      const deltaY = e.movementY
+      const deltaX = e.clientX - lastMouseX
+      const deltaY = e.clientY - lastMouseY
 
       onResize!(id, direction, deltaX, deltaY)
+      lastMouseX = e.clientX
+      lastMouseY = e.clientY
     }
 
     function handleMouseUp() {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
   }
 
   const ResizeHandle = ({ direction }: { direction: Direction }) => {
