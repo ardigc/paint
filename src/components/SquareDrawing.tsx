@@ -74,7 +74,7 @@ export function SquareDrawing({
     }
   }
 
-  const handleMouseUp: MouseEventHandler<HTMLDivElement> = (ev) => {
+  const handleMouseUp = () => {
     if (isPlaceholder) return
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -82,7 +82,7 @@ export function SquareDrawing({
     }
   }
 
-  const handleMouseMove: MouseEventHandler<HTMLDivElement> = (ev) => {
+  const handleMouseMove = () => {
     if (isPlaceholder) return
   }
 
