@@ -1,4 +1,4 @@
-import { useState, MouseEventHandler, useRef, useEffect } from 'react'
+import { useState, MouseEventHandler, useRef, ChangeEventHandler } from 'react'
 export default function Sqre({
   top,
   left,
@@ -23,7 +23,7 @@ export default function Sqre({
 }) {
   const [isDown, setIsDown] = useState(false)
   const [isDown2, setIsDown2] = useState(0)
-  const [squareNameOr, setSquareNameOr] = useState(sqrName)
+  // const [squareNameOr, setSquareNameOr] = useState(sqrName)
   const [vari, setVari] = useState(0)
   const myRef = useRef<HTMLDivElement | null>(null)
 
@@ -43,15 +43,13 @@ export default function Sqre({
     width: number
   }>({ top: 0, left: 0, height: 0, width: 0 })
   // setSquareNameOr("")
-  useEffect(() => {
-    fn(index, left, top, height, width, squareNameOr)
-  }, [squareNameOr])
+
   const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
     console.log('Mouse down')
 
     console.log('mousedown name:', sqrName)
-    console.log('mousedown or: ', squareNameOr)
-    setSquareNameOr(sqrName)
+    // console.log('mousedown or: ', squareNameOr)
+    // setSquareNameOr(sqrName)
     setCoord({ x: ev.clientX, y: ev.clientY })
     setMove({ x: ev.clientX, y: ev.clientY })
     setIsDown(true)
@@ -158,7 +156,7 @@ export default function Sqre({
   const mouseUpHandler3 = () => {
     console.log('Mouse up3')
 
-    fn(index, left, top, height, width, squareNameOr)
+    fn(index, left, top, height, width, sqrName)
     setIsDown(false)
     setSize({ top: 0, left: 0, width: 0, height: 0 })
     setIsDown2(0)
@@ -215,10 +213,17 @@ export default function Sqre({
     cursor = 'default'
   }
   const mouseUpHandler2 = () => {
-    fn(index, left, top, height, width, squareNameOr)
+    fn(index, left, top, height, width, sqrName)
 
     setIsDown(false)
   }
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = (ev) => {
+    // setSquareNameOr(ev.target.) }
+    const nameSqr = ev.target.value
+    console.log(nameSqr)
+    fn(index, left, top, height, width, nameSqr)
+  }
+
   return (
     <div
       onClick={() => setGrab(true)}
@@ -241,7 +246,7 @@ export default function Sqre({
         onMouseMove={mouseMoveHandler}
         onMouseUp={mouseUpHandler2}
         className="bg-green-500 bg-opacity-50 absolute shadow-black shadow-xl overflow-hidden"
-        id={squareNameOr}
+        // id={squareNameOr}
         tabIndex={0}
         style={{
           top: top,
@@ -255,10 +260,7 @@ export default function Sqre({
       >
         <label>
           Nombre del cuadrado:
-          <input
-            value={sqrName}
-            onChange={(e) => setSquareNameOr(e.target.value)}
-          ></input>
+          <input value={sqrName} onChange={changeHandler} />
         </label>
       </div>
       {isDown2 !== 0 && (
