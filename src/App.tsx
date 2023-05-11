@@ -1,9 +1,11 @@
 import { ChangeEventHandler, useRef, useState } from 'react'
 import UploadIcon from './components/UploadIcon'
 import Canvas from './components/Canvas'
+import { PolygonCanvas } from './components/PolygonCanvas'
 
 function App() {
   const [url, setUrl] = useState<string | null>(null)
+  const [type, setType] = useState<'squares' | 'polygon'>('squares')
   const ref = useRef<HTMLInputElement | null>(null)
   const clickHandler = () => {
     ref.current?.click()
@@ -14,6 +16,11 @@ function App() {
     const url = URL.createObjectURL(img)
     setUrl(url)
   }
+
+  const selectHandler: ChangeEventHandler<HTMLSelectElement> = (ev) => {
+    setType(ev.target.value as 'squares' | 'polygon')
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h2>Upload your imagen</h2>
@@ -30,7 +37,16 @@ function App() {
       >
         <UploadIcon />
       </div>
-      {url && <Canvas url={url} />}
+      <select
+        className="border border-blue-500 rounded-md"
+        value={type}
+        onChange={selectHandler}
+      >
+        <option value="squares">Squares</option>
+        <option value="polygon">Polygon</option>
+      </select>
+      {url && type === 'squares' && <Canvas url={url} />}
+      {url && type === 'polygon' && <PolygonCanvas url={url} />}
     </div>
   )
 }
