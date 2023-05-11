@@ -37,8 +37,7 @@ export function SquareDrawing({
   const [isSelected, setIsSelected] = useState(false)
   const timeoutRef = useRef<number | null>(null)
 
-  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation()
+  const handleDragStart = (e: ReactMouseEvent<HTMLDivElement>) => {
     let lastMouseX = e.clientX
     let lastMouseY = e.clientY
 
