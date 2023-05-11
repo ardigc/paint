@@ -1,170 +1,180 @@
 import { MouseEventHandler, useState, ReactEventHandler } from 'react'
-import Sqre from './squares'
-import Export from './Export'
+import { Square } from '../types'
+import { Direction, SquareDrawing } from './SquareDrawing'
+import { downloadJsonAsCsv } from '../helpers/JSONtoCSV'
+
+type Placeholder = Omit<Square, 'name'> | null
+type Pivot = Pick<Square, 'x' | 'y'> | null
 
 export default function Canvas({ url }: { url: string }) {
-  const [isDown, setIsDown] = useState(false)
-  const [coord, setCoord] = useState<{ x: number; y: number }>({ x: 0, y: 0 })
-  const [size, setSize] = useState<{ width: number; height: number }>({
-    width: 0,
-    height: 0,
-  })
-  const [counter, setCounter] = useState(0)
-  const [top, setTop] = useState(0)
-  const [left, setLeft] = useState(0)
-  const [height, setHeight] = useState(0)
-  const [width, setWidth] = useState(0)
-  const [sqrName, setSqrName] = useState('unnamed')
-
   const [rect, setRect] = useState<DOMRect>()
-  const [sqrArr, setSqrArr] = useState<
-    {
-      top: number
-      left: number
-      width: number
-      height: number
-      index: number
-      sqrName: string
-    }[]
-  >([{ top: 0, left: 0, width: 0, height: 0, index: 0, sqrName: '' }])
-  const mouseDownHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    if (rect) {
-      console.log('Mouse down')
-      setSize({ width: 0, height: 0 })
-      setCoord({ x: 0, y: 0 })
-      setCoord({ x: ev.clientX - rect.x, y: ev.clientY - rect.y })
-      setSqrName('unnamed')
-      setIsDown(true)
-      console.log(sqrArr)
-      const sqr = {
-        top: top,
-        left: left,
-        width: width,
-        height: height,
-        index: sqrArr.length,
-        sqrName: sqrName,
-      }
-      const sqrArrCopy = sqrArr
-      sqrArrCopy?.push(sqr)
-      setSqrArr(sqrArrCopy)
-      document.addEventListener('mouseup', mouseUpHandler, { once: true })
-    }
-  }
-  const mouseMoveHandler: MouseEventHandler<HTMLImageElement> = (ev) => {
-    if (isDown && rect) {
-      setSize({
-        width: ev.clientX - rect.x - coord.x,
-        height: ev.clientY - rect.y - coord.y,
-      })
-      if (size.height < 0) {
-        setTop(coord.y + size.height)
-      } else {
-        setTop(coord.y)
-      }
-      // const left = size.width < 0 ? coord.x + size.width : coord.x;
-      if (size.width < 0) {
-        setLeft(coord.x + size.width)
-      } else {
-        setLeft(coord.x)
-      }
-      setWidth(Math.abs(size.width))
-      setHeight(Math.abs(size.height))
-    }
-  }
-  function modMove(
-    index: number,
-    movY: number,
-    movX: number,
-    height: number,
-    width: number,
-    sqrName: string
-  ) {
-    console.log('modmove', sqrName)
-    if (index !== -1) {
-      const sqrArrCopy = sqrArr
-      sqrArrCopy[index].top = movX
-      sqrArrCopy[index].left = movY
-      sqrArrCopy[index].height = height
-      sqrArrCopy[index].width = width
-      sqrArrCopy[index].sqrName = sqrName
-      setSqrArr(sqrArrCopy)
-    } else {
-      setTop(movX)
-      setLeft(movY)
-      setHeight(height)
-      setWidth(width)
-      setSqrName(sqrName)
-    }
-    setCounter(counter + 1)
+  const [squares, setSquares] = useState<Square[]>([])
+  const [pivot, setPivot] = useState<Pivot>(null)
+  const [placeholder, setPlaceholder] = useState<Placeholder>(null)
+
+  const loadHandler: ReactEventHandler<HTMLImageElement> = (ev) => {
+    const parentDiv = ev.currentTarget.parentElement
+    const rect = parentDiv?.getBoundingClientRect()
+    setRect(rect)
   }
 
-  // const top = size.height < 0 ? coord.y + size.height : coord.y;
-
-  // const element = EventTarget as HTMLElement
-  const onLoadHandler: ReactEventHandler = (ev) => {
-    const target = ev.target as HTMLElement
-    setRect(target.getBoundingClientRect())
+  const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (!rect) return
+    const { left, top } = rect
+    const { clientX, clientY } = ev
+    const squareX = clientX - left
+    const squareY = clientY - top
+    setPivot({ x: squareX, y: squareY })
   }
+
+  const mouseMoveHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (!rect || !pivot) return
+    const { clientX, clientY } = ev
+    const mouseX = clientX - rect.left
+    const mouseY = clientY - rect.top
+
+    const width = Math.abs(mouseX - pivot.x)
+    const height = Math.abs(mouseY - pivot.y)
+
+    const left = mouseX < pivot.x ? mouseX : pivot.x
+    const top = mouseY < pivot.y ? mouseY : pivot.y
+    setPlaceholder({ x: left, y: top, width, height })
+  }
+
   const mouseUpHandler = () => {
-    console.log('Mouse up')
-    setIsDown(false)
+    setPivot(null)
+    if (!rect || !placeholder) return
+    setSquares((prev) => [...prev, { ...placeholder, name: '' }])
+    setPlaceholder(null)
   }
-  const clickHandle = () => {
-    setSqrArr([{ top: 0, left: 0, width: 0, height: 0, index: 0, sqrName: '' }])
-    setSize({ width: 0, height: 0 })
-    setCoord({ x: 0, y: 0 })
-    setLeft(0)
-    setWidth(0)
-    setHeight(0)
-    setTop(0)
-    setSqrName('unnamed')
+
+  const handleSquareResize = (
+    id: number,
+    direction: Direction,
+    deltaX: number,
+    deltaY: number
+  ) => {
+    if (!rect) return
+    setSquares((prev) => {
+      const newSquares = [...prev]
+      const square = newSquares[id]
+      if (!square) return newSquares
+
+      let newWidth = square.width
+      let newHeight = square.height
+      let newLeft = square.x
+      let newTop = square.y
+
+      if (direction === 'top') {
+        const maxHeight = square.y + square.height
+        newHeight = Math.max(0, Math.min(maxHeight, square.height - deltaY))
+        newTop = square.y + (square.height - newHeight)
+      } else if (direction === 'bottom') {
+        const maxHeight = rect.height - square.y
+        newHeight = Math.max(0, Math.min(maxHeight, square.height + deltaY))
+      }
+
+      if (direction === 'left') {
+        const maxWidth = square.x + square.width
+        newWidth = Math.max(0, Math.min(maxWidth, square.width - deltaX))
+        newLeft = square.x + (square.width - newWidth)
+      } else if (direction === 'right') {
+        const maxWidth = rect.width - square.x
+        newWidth = Math.max(0, Math.min(maxWidth, square.width + deltaX))
+      }
+
+      newSquares[id] = {
+        ...square,
+        width: newWidth,
+        height: newHeight,
+        x: newLeft,
+        y: newTop,
+      }
+      return newSquares
+    })
   }
+
+  const handleSquareMove = (id: number, deltaX: number, deltaY: number) => {
+    if (!rect) return
+    setSquares((prev) => {
+      const newSquares = [...prev]
+      const square = newSquares[id]
+      if (!square) return newSquares
+
+      const newLeft = Math.max(
+        0,
+        Math.min(rect.width - square.width, square.x + deltaX)
+      )
+      const newTop = Math.max(
+        0,
+        Math.min(rect.height - square.height, square.y + deltaY)
+      )
+
+      newSquares[id] = { ...square, x: newLeft, y: newTop }
+      return newSquares
+    })
+  }
+
+  const changeNameHandler = (id: number, name: string) => {
+    setSquares((prev) => {
+      const newSquares = [...prev]
+      const square = newSquares[id]
+      if (!square) return newSquares
+
+      newSquares[id] = { ...square, name }
+      return newSquares
+    })
+  }
+
+  const handleCleanSquares = () => {
+    setSquares([])
+  }
+
+  const handleDownload = () => {
+    downloadJsonAsCsv(squares, 'data.csv')
+  }
+
   return (
     <div>
-      <div className="relative" onMouseMove={mouseMoveHandler}>
+      <div
+        className="relative w-max"
+        onMouseMove={mouseMoveHandler}
+        onMouseDown={mouseDownHandler}
+        onMouseUp={mouseUpHandler}
+        onMouseLeave={mouseUpHandler}
+      >
         <img
           draggable={false}
-          onMouseDown={mouseDownHandler}
-          onLoad={onLoadHandler}
+          onLoad={loadHandler}
           src={url}
           className="select-none"
         />
-        {/* probar con is down para que arrastre o no sobre el cuadro el div de abajo*/}
-
-        {sqrArr.map((it) => (
-          <Sqre
-            {...it}
-            fn={modMove}
-            rect={rect}
-            //  setCounter={setCounter}
+        {placeholder && (
+          <SquareDrawing {...placeholder} name="" id={0} isPlaceholder />
+        )}
+        {squares.map((square, index) => (
+          <SquareDrawing
+            key={`Square-${index}`}
+            {...square}
+            id={index}
+            onResize={handleSquareResize}
+            onMove={handleSquareMove}
+            onChangeName={changeNameHandler}
           />
         ))}
-        <Sqre
-          top={top}
-          left={left}
-          height={height}
-          width={width}
-          rect={rect}
-          fn={modMove}
-          sqrName={sqrName}
-          // setCounter={setCounter}
-          index={-1}
-        />
       </div>
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"
-        onClick={clickHandle}
+        onClick={handleCleanSquares}
       >
         Limpiar cuadros
       </button>
-      <Export
-        sqrArr={sqrArr}
-        sqrName={sqrName}
-        top={top}
-        left={left}
-        height={height}
-        width={width}
-      />
+      <button
+        className="border-t-neutral-900 bg-slate-500 rounded-md"
+        onClick={handleDownload}
+      >
+        Export as csv
+      </button>
     </div>
   )
 }
