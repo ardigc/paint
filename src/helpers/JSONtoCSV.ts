@@ -1,4 +1,7 @@
 function jsonToCsv(data: any[]): string {
+  if (data.length === 0) {
+    throw new Error('No data provided')
+  }
   const replacer = (key: string, value: any) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = Object.keys(data[0])
   const csv = [
