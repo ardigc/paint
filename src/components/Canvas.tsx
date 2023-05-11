@@ -53,6 +53,7 @@ export default function Canvas({ url }: { url: string }) {
     deltaX: number,
     deltaY: number
   ) => {
+    if (!rect) return
     setSquares((prev) => {
       const newSquares = [...prev]
       const square = newSquares[id]
@@ -64,17 +65,21 @@ export default function Canvas({ url }: { url: string }) {
       let newTop = square.y
 
       if (direction === 'top') {
-        newHeight = Math.max(square.height - deltaY, 0)
+        const maxHeight = square.y + square.height
+        newHeight = Math.max(0, Math.min(maxHeight, square.height - deltaY))
         newTop = square.y + (square.height - newHeight)
       } else if (direction === 'bottom') {
-        newHeight = Math.max(square.height + deltaY, 0)
+        const maxHeight = rect.height - square.y
+        newHeight = Math.max(0, Math.min(maxHeight, square.height + deltaY))
       }
 
       if (direction === 'left') {
-        newWidth = Math.max(square.width - deltaX, 0)
+        const maxWidth = square.x + square.width
+        newWidth = Math.max(0, Math.min(maxWidth, square.width - deltaX))
         newLeft = square.x + (square.width - newWidth)
       } else if (direction === 'right') {
-        newWidth = Math.max(square.width + deltaX, 0)
+        const maxWidth = rect.width - square.x
+        newWidth = Math.max(0, Math.min(maxWidth, square.width + deltaX))
       }
 
       newSquares[id] = {
@@ -89,13 +94,20 @@ export default function Canvas({ url }: { url: string }) {
   }
 
   const handleSquareMove = (id: number, deltaX: number, deltaY: number) => {
+    if (!rect) return
     setSquares((prev) => {
       const newSquares = [...prev]
       const square = newSquares[id]
       if (!square) return newSquares
 
-      const newLeft = Math.max(square.x + deltaX, 0)
-      const newTop = Math.max(square.y + deltaY, 0)
+      const newLeft = Math.max(
+        0,
+        Math.min(rect.width - square.width, square.x + deltaX)
+      )
+      const newTop = Math.max(
+        0,
+        Math.min(rect.height - square.height, square.y + deltaY)
+      )
 
       newSquares[id] = { ...square, x: newLeft, y: newTop }
       return newSquares
