@@ -115,6 +115,17 @@ export default function Canvas({ url }: { url: string }) {
     })
   }
 
+  const changeNameHandler = (id: number, name: string) => {
+    setSquares((prev) => {
+      const newSquares = [...prev]
+      const square = newSquares[id]
+      if (!square) return newSquares
+
+      newSquares[id] = { ...square, name }
+      return newSquares
+    })
+  }
+
   const handleCleanSquares = () => {
     setSquares([])
   }
@@ -145,10 +156,10 @@ export default function Canvas({ url }: { url: string }) {
           <SquareDrawing
             key={`Square-${index}`}
             {...square}
-            name=""
             id={index}
             onResize={handleSquareResize}
             onMove={handleSquareMove}
+            onChangeName={changeNameHandler}
           />
         ))}
       </div>

@@ -4,6 +4,7 @@ import {
   useState,
   MouseEventHandler,
   useRef,
+  ChangeEventHandler,
 } from 'react'
 
 export type Direction = 'top' | 'right' | 'bottom' | 'left'
@@ -18,6 +19,7 @@ interface Props extends Square {
     deltaY: number
   ) => void
   onMove?: (id: number, deltaX: number, deltaY: number) => void
+  onChangeName?: (id: number, name: string) => void
 }
 
 export function SquareDrawing({
@@ -29,6 +31,7 @@ export function SquareDrawing({
   id,
   onResize,
   onMove,
+  onChangeName,
   isPlaceholder,
 }: Props) {
   const [isSelected, setIsSelected] = useState(false)
@@ -109,6 +112,10 @@ export function SquareDrawing({
     document.addEventListener('mouseup', handleMouseUp)
   }
 
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
+    onChangeName?.(id, e.target.value)
+  }
+
   const ResizeHandle = ({ direction }: { direction: Direction }) => {
     return (
       <div
@@ -136,7 +143,7 @@ export function SquareDrawing({
       onBlur={() => setIsSelected(false)}
       tabIndex={0}
     >
-      {name}
+      {!isPlaceholder && <input value={name} onChange={changeHandler} />}
       {isSelected && (
         <>
           <ResizeHandle direction="top" />
