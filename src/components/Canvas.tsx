@@ -1,6 +1,7 @@
 import { MouseEventHandler, useState, ReactEventHandler } from 'react'
 import { Square } from '../types'
 import { Direction, SquareDrawing } from './SquareDrawing'
+import { downloadJsonAsCsv } from '../helpers/JSONtoCSV'
 
 type Placeholder = Omit<Square, 'name'> | null
 type Pivot = Pick<Square, 'x' | 'y'> | null
@@ -118,6 +119,10 @@ export default function Canvas({ url }: { url: string }) {
     setSquares([])
   }
 
+  const handleDownload = () => {
+    downloadJsonAsCsv(squares, 'data.csv')
+  }
+
   return (
     <div>
       <div
@@ -153,7 +158,10 @@ export default function Canvas({ url }: { url: string }) {
       >
         Limpiar cuadros
       </button>
-      <button className="border-t-neutral-900 bg-slate-500 rounded-md">
+      <button
+        className="border-t-neutral-900 bg-slate-500 rounded-md"
+        onClick={handleDownload}
+      >
         Export as csv
       </button>
     </div>
