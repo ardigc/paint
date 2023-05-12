@@ -6,12 +6,11 @@ interface Lines {
   yFin: number
 }
 type CoordOr = Pick<Lines, 'xOr' | 'yOr'> | null
-type CoordFin = Pick<Lines, 'xFin' | 'yFin'> | null
+// type CoordFin = Pick<Lines, 'xFin' | 'yFin'> | null
 export function PolygonCanvas({ url }: { url: string }) {
+  console.log('empieza')
   const canvasBeta = useRef<HTMLCanvasElement | null>(null)
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
-  const [coordFin, setCoordFin] = useState<CoordFin>(null)
-  // const [rect, setRect] = useState<DOMRect>()
   const [lines, setLines] = useState<Lines[]>([])
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
@@ -25,6 +24,15 @@ export function PolygonCanvas({ url }: { url: string }) {
       ctx.drawImage(img, 0, 0)
     }
   }
+  // if(ctx){
+
+  //   ctx.beginPath()
+  //   ctx.moveTo(300, 300)
+  //   ctx.lineTo(10, 10)
+  //   console.log("linea")
+  //   ctx.stroke()
+  // }
+  // console.log("acaba")
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!ctx || !rectCanvas) return
     const { left, top } = rectCanvas
@@ -34,26 +42,23 @@ export function PolygonCanvas({ url }: { url: string }) {
     if (!coordOr) {
       setCoordOr({ xOr: coordX, yOr: coordY })
     } else {
-      setCoordFin({ xFin: coordX, yFin: coordY })
       setLines((prev) => [
         ...prev,
         { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
       ])
-      // setCoordOr(null)
     }
-    console.log(lines)
   }
   if (lines.length >= 1 && ctx) {
     ctx.beginPath()
     ctx.moveTo(lines[0].xOr, lines[0].yOr)
     lines.map((lines, index) => {
-      // console.log(lines)
-      // ctx.lineTo(150, 100);
       ctx.lineTo(lines.xFin, lines.yFin)
     })
     ctx.stroke()
+    console.log('linea')
   }
 
+  console.log('acaba')
   return (
     <div>
       <div
