@@ -53,11 +53,13 @@ export function PolygonCanvas({ url }: { url: string }) {
         canvas.width = img.width
         canvas.height = img.height
         ctx.drawImage(img, 0, 0)
+        // aqui lo suyo seria hacer un array de poligonos
       }
     }
   }
   const closePoligon: MouseEventHandler<HTMLDivElement> = (ev) => {
     ev.stopPropagation()
+    setCoordOr(null)
     setFinal(true)
   }
   if (lines.length >= 1 && ctx) {
@@ -66,6 +68,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     lines.map((lines) => {
       ctx.lineTo(lines.xFin, lines.yFin)
     })
+    // aqui hacer un map del array de poligonos iniciandolos y termianndolo
     if (final) {
       ctx?.closePath()
     }
