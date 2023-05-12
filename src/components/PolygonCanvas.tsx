@@ -26,38 +26,40 @@ export function PolygonCanvas({ url }: { url: string }) {
     }
   }
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
-    if (!ctx || !rectCanvas || !coordOr) return
-
-    setLines((prev) => [
-      ...prev,
-      { xOr: coordOr?.xOr, yOr: coordOr.yOr, xFin: mouseX, yFin: mouseY },
-    ])
+    if (!ctx || !rectCanvas) return
     const { left, top } = rectCanvas
     const { clientX, clientY } = ev
     const coordX = clientX - left
     const coordY = clientY - top
-    setCoordOr({ xOr: coordX, yOr: coordY })
-  }
-  const mouseMoveHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
-    if (!ctx || !rectCanvas) return
-    if (coordOr?.xOr && coordOr?.yOr) {
-      ctx.clearRect(10, 10, 120, 100)
-      ctx.beginPath()
-      ctx.moveTo(coordOr?.xOr, coordOr?.yOr)
-      const { clientX, clientY } = ev
-      const mouseX = clientX - rectCanvas.left
-      const mouseY = clientY - rectCanvas.top
-      ctx.drawImage(img, 0, 0)
-      ctx.lineTo(mouseX, mouseY)
-      ctx.stroke()
+    if (!coordOr) {
+      setCoordOr({ xOr: coordX, yOr: coordY })
+    } else {
+      setCoordFin({ xFin: coordX, yFin: coordY })
+      setLines((prev) => [
+        ...prev,
+        { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
+      ])
+      // setCoordOr(null)
     }
+    console.log(lines)
   }
+  if (lines.length >= 1 && ctx) {
+    ctx.beginPath()
+    ctx.moveTo(lines[0].xOr, lines[0].yOr)
+    lines.map((lines, index) => {
+      // console.log(lines)
+      // ctx.lineTo(150, 100);
+      ctx.lineTo(lines.xFin, lines.yFin)
+    })
+    ctx.stroke()
+  }
+
   return (
     <div>
       <div
         className="relative w-max"
         onClick={clickHandler}
-        onMouseMove={mouseMoveHandler}
+        // onMouseMove={mouseMoveHandler}
       >
         <canvas ref={canvasBeta}></canvas>
       </div>
