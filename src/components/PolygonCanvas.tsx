@@ -8,7 +8,6 @@ interface Lines {
 type CoordOr = Pick<Lines, 'xOr' | 'yOr'> | null
 // type CoordFin = Pick<Lines, 'xFin' | 'yFin'> | null
 export function PolygonCanvas({ url }: { url: string }) {
-  console.log('empieza')
   const canvasBeta = useRef<HTMLCanvasElement | null>(null)
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
   const [lines, setLines] = useState<Lines[]>([])
@@ -41,23 +40,37 @@ export function PolygonCanvas({ url }: { url: string }) {
         { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
       ])
     }
+    console.log(coordOr)
+  }
+  function removeLines() {
+    setLines([])
+    setCoordOr(null)
+    ctx?.clearRect
   }
   if (lines.length >= 1 && ctx) {
     ctx.beginPath()
     ctx.moveTo(lines[0].xOr, lines[0].yOr)
-    lines.map((lines, index) => {
+    lines.map((lines) => {
       ctx.lineTo(lines.xFin, lines.yFin)
     })
     ctx.stroke()
-    console.log('linea')
   }
 
-  console.log('acaba')
   return (
     <div>
       <div className="relative w-max" onClick={clickHandler}>
         <canvas ref={canvasBeta}></canvas>
+        {coordOr && (
+          <div
+            className="absolute h-2 w-2 bg-slate-500 rounded-full"
+            style={{
+              top: coordOr.yOr,
+              left: coordOr.xOr,
+            }}
+          ></div>
+        )}
       </div>
+      <button onClick={removeLines}>Limpiar linead</button>
     </div>
   )
 }
