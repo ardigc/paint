@@ -5,7 +5,7 @@ import { PolygonCanvas } from './components/PolygonCanvas'
 
 function App() {
   const [url, setUrl] = useState<string | null>(null)
-  const [type, setType] = useState<'squares' | 'polygon'>('squares')
+  const [type, setType] = useState<'squares' | 'polygon'>('polygon')
   const ref = useRef<HTMLInputElement | null>(null)
   const clickHandler = () => {
     ref.current?.click()
