@@ -13,6 +13,7 @@ type CoordOr = Pick<Lines, 'xOr' | 'yOr'> | null
 // type CoordFin = Pick<Lines, 'xFin' | 'yFin'> | null
 export function PolygonCanvas({ url }: { url: string }) {
   const canvasBeta = useRef<HTMLCanvasElement | null>(null)
+  const imagen = useRef<HTMLImageElement | null>(null)
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
   const [lines, setLines] = useState<Lines[]>([])
   const [linesArr, setLinesArr] = useState<LinesArr[]>([])
@@ -20,17 +21,13 @@ export function PolygonCanvas({ url }: { url: string }) {
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
+  const imgen = imagen.current?.getBoundingClientRect()
   useEffect(() => {
     const canvas = canvasBeta.current
     const ctx = canvas?.getContext('2d')
-    const img = new Image()
-    img.src = url
-    img.onload = function () {
-      if (canvas && ctx) {
-        canvas.width = img.width
-        canvas.height = img.height
-        ctx.drawImage(img, 0, 0)
-      }
+    if (canvas && ctx && imgen) {
+      canvas.width = imgen.width
+      canvas.height = imgen.height
     }
   }, [canvas])
   const isPointInPolygon = (
@@ -104,14 +101,10 @@ export function PolygonCanvas({ url }: { url: string }) {
           console.log(newlines[selected])
           lastMouseX = ev.clientX
           lastMouseY = ev.clientY
-          const img = new Image()
-          img.src = url
-          img.onload = function () {
-            if (canvas && ctx) {
-              canvas.width = img.width
-              canvas.height = img.height
-              ctx.drawImage(img, 0, 0)
-            }
+          if (canvas && ctx && imgen) {
+            canvas.width = imgen.width
+            canvas.height = imgen.height
+            ctx.globalAlpha = 0.5
           }
           return newlines
         })
@@ -182,10 +175,9 @@ export function PolygonCanvas({ url }: { url: string }) {
     const img = new Image()
     img.src = url
     img.onload = function () {
-      if (canvas && ctx) {
-        canvas.width = img.width
-        canvas.height = img.height
-        ctx.drawImage(img, 0, 0)
+      if (canvas && ctx && imgen) {
+        canvas.width = imgen.width
+        canvas.height = imgen.height
       }
     }
   }
@@ -227,7 +219,13 @@ export function PolygonCanvas({ url }: { url: string }) {
         onClick={clickHandler}
         onMouseDown={mouseDownHandler}
       >
-        <canvas ref={canvasBeta}></canvas>
+        <img
+          ref={imagen}
+          draggable={false}
+          src={url}
+          className="select-none relative"
+        />
+        <canvas ref={canvasBeta} className="absolute top-0 left-0"></canvas>
         {coordOr && (
           <div
             className="absolute h-2 w-2 cursor-pointer border bg-orange-600 rounded-full"
