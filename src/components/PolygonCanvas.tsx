@@ -23,13 +23,54 @@ export function PolygonCanvas({ url }: { url: string }) {
     const img = new Image()
     img.src = url
     img.onload = function () {
+      console.log(canvas)
       if (canvas && ctx) {
+        console.log('dentro  de use')
         canvas.width = img.width
         canvas.height = img.height
         ctx.drawImage(img, 0, 0)
       }
     }
-  }, [url])
+  }, [canvas])
+  const isPointInPolygon = (
+    x: number,
+    y: number,
+    polygon: Lines[]
+  ): boolean => {
+    let inside = false
+    const { length } = polygon
+    for (let i = 0, j = length - 1; i <= length; j = i++) {
+      if (i === 0) {
+        const xi = polygon[i].xOr
+        const yi = polygon[i].yOr
+        const xj = polygon[i].xFin
+        const yj = polygon[i].yFin
+        const intersect =
+          yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+        if (intersect) inside = !inside
+        return inside
+      } else if (i === length) {
+        const xi = polygon[i].xFin
+        const yi = polygon[i].yFin
+        const xj = polygon[j].xOr
+        const yj = polygon[j].yOr
+        const intersect =
+          yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+        if (intersect) inside = !inside
+        return inside
+      } else {
+        const xi = polygon[i].xFin
+        const yi = polygon[i].yFin
+        const xj = polygon[j].xFin
+        const yj = polygon[j].yFin
+        const intersect =
+          yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
+        if (intersect) inside = !inside
+        return inside
+      }
+    }
+    return inside
+  }
 
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!ctx || !rectCanvas) return
@@ -37,6 +78,12 @@ export function PolygonCanvas({ url }: { url: string }) {
     const { clientX, clientY } = ev
     const coordX = clientX - left
     const coordY = clientY - top
+    if (linesArr.length >= 1) {
+      const lastPolygon = linesArr[linesArr.length - 1]
+      if (isPointInPolygon(coordX, coordY, lastPolygon.lines)) {
+        console.log('Clicked inside polygon')
+      }
+    }
     if (!coordOr) {
       setCoordOr({ xOr: coordX, yOr: coordY })
     } else {
@@ -60,13 +107,13 @@ export function PolygonCanvas({ url }: { url: string }) {
       }
     }
   }
+
   const closePoligon: MouseEventHandler<HTMLDivElement> = (ev) => {
     ev.stopPropagation()
     setCoordOr(null)
     setLinesArr((prev) => [...prev, { lines, polygon: linesArr.length }])
     setLines([])
   }
-  console.log(linesArr)
   if (lines.length >= 1 && ctx) {
     ctx.beginPath()
     ctx.moveTo(lines[0].xOr, lines[0].yOr)
