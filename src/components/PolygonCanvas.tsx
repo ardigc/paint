@@ -27,9 +27,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     const img = new Image()
     img.src = url
     img.onload = function () {
-      console.log(canvas)
       if (canvas && ctx) {
-        // console.log('dentro  de use')
         canvas.width = img.width
         canvas.height = img.height
         ctx.drawImage(img, 0, 0)
@@ -53,7 +51,6 @@ export function PolygonCanvas({ url }: { url: string }) {
           yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
         if (intersect) inside = !inside
       } else if (i === length) {
-        console.log(polygon, i)
         const xi = polygon[i - 1].xFin
         const yi = polygon[i - 1].yFin
         const xj = polygon[0].xOr
@@ -71,9 +68,6 @@ export function PolygonCanvas({ url }: { url: string }) {
         if (intersect) inside = !inside
       }
     }
-    // if (inside) {
-    //   setInto(true)
-    // }
     return inside
   }
   const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
@@ -83,6 +77,25 @@ export function PolygonCanvas({ url }: { url: string }) {
     const coordX = clientX - left
     const coordY = clientY - top
     if (isPointInPolygon(coordX, coordY, linesArr[selected].lines)) {
+      function handleMouseMove(ev: MouseEvent) {
+        setLinesArr((prev) => {
+          const deltaX = ev.movementX
+          const deltaY = ev.movementY
+          const newlines = [...prev]
+          const line = newlines[selected]
+          line.lines.map((line) => {})
+          console.log(line)
+          return newlines
+        })
+      }
+
+      function handleMouseUp() {
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleMouseUp)
+      }
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+      console.log('pinchas en el cuadrado seleccionado!')
     }
   }
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
@@ -101,12 +114,9 @@ export function PolygonCanvas({ url }: { url: string }) {
           if (isPointInPolygon(coordX, coordY, line.lines)) {
             poligonInside = true
             setSelected(index)
-            console.log(linesArr[index])
-            console.log('Clicked inside polygon')
           }
         })
         if (poligonInside) {
-          console.log('no se dibuja')
         } else {
           setCoordOr({ xOr: coordX, yOr: coordY })
           setSelected(-1)
@@ -121,7 +131,6 @@ export function PolygonCanvas({ url }: { url: string }) {
       ])
     }
   }
-  console.log(selected)
   const removeLines = () => {
     setLines([])
     setCoordOr(null)
