@@ -80,22 +80,22 @@ export function PolygonCanvas({ url }: { url: string }) {
     const coordX = clientX - left
     const coordY = clientY - top
     if (linesArr.length >= 1) {
-      // const lastPolygon = linesArr[linesArr.length - 1]
       linesArr.map((line) => {
         if (isPointInPolygon(coordX, coordY, line.lines)) {
+          //aqui deberia haber alguna mierda que haga que si uno da true ya se ejecute
           console.log('Clicked inside polygon')
+        } else {
         }
       })
-      // if (isPointInPolygon(coordX, coordY, lastPolygon.lines)) {
-      // }
-    }
-    if (!coordOr) {
-      setCoordOr({ xOr: coordX, yOr: coordY })
     } else {
-      setLines((prev) => [
-        ...prev,
-        { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
-      ])
+      if (!coordOr) {
+        setCoordOr({ xOr: coordX, yOr: coordY })
+      } else {
+        setLines((prev) => [
+          ...prev,
+          { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
+        ])
+      }
     }
   }
   const removeLines = () => {
