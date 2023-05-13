@@ -76,7 +76,15 @@ export function PolygonCanvas({ url }: { url: string }) {
     // }
     return inside
   }
-
+  const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (!ctx || !rectCanvas) return
+    const { left, top } = rectCanvas
+    const { clientX, clientY } = ev
+    const coordX = clientX - left
+    const coordY = clientY - top
+    if (isPointInPolygon(coordX, coordY, linesArr[selected].lines)) {
+    }
+  }
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!ctx || !rectCanvas) return
     const { left, top } = rectCanvas
@@ -160,7 +168,11 @@ export function PolygonCanvas({ url }: { url: string }) {
 
   return (
     <div>
-      <div className="relative w-max" onClick={clickHandler}>
+      <div
+        className="relative w-max"
+        onClick={clickHandler}
+        onMouseDown={mouseDownHandler}
+      >
         <canvas ref={canvasBeta}></canvas>
         {coordOr && (
           <div
