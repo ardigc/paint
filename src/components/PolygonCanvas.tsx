@@ -20,7 +20,6 @@ export function PolygonCanvas({ url }: { url: string }) {
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
-
   useEffect(() => {
     const canvas = canvasBeta.current
     const ctx = canvas?.getContext('2d')
@@ -105,6 +104,15 @@ export function PolygonCanvas({ url }: { url: string }) {
           console.log(newlines[selected])
           lastMouseX = ev.clientX
           lastMouseY = ev.clientY
+          const img = new Image()
+          img.src = url
+          img.onload = function () {
+            if (canvas && ctx) {
+              canvas.width = img.width
+              canvas.height = img.height
+              ctx.drawImage(img, 0, 0)
+            }
+          }
           return newlines
         })
       }
@@ -115,7 +123,6 @@ export function PolygonCanvas({ url }: { url: string }) {
       }
       document.addEventListener('mousemove', handleMouseMove)
       document.addEventListener('mouseup', handleMouseUp)
-      console.log('pinchas en el cuadrado seleccionado!')
     }
   }
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
@@ -173,6 +180,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     setLinesArr((prev) => [...prev, { lines, polygon: linesArr.length }])
     setLines([])
   }
+
   if (lines.length >= 1 && ctx) {
     ctx.beginPath()
     ctx.moveTo(lines[0].xOr, lines[0].yOr)
