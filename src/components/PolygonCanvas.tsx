@@ -38,6 +38,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     polygon: Lines[]
   ): boolean => {
     let inside = false
+    console.log(polygon)
     const { length } = polygon
     for (let i = 0, j = length - 1; i <= length; j = i++) {
       if (i === 0) {
