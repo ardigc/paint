@@ -19,7 +19,10 @@ export function PolygonCanvas({ url }: { url: string }) {
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
+
   useEffect(() => {
+    const canvas = canvasBeta.current
+    const ctx = canvas?.getContext('2d')
     const img = new Image()
     img.src = url
     img.onload = function () {
