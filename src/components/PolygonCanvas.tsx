@@ -5,13 +5,17 @@ interface Lines {
   xFin: number
   yFin: number
 }
+interface LinesArr {
+  polygon: number
+  lines: Array<Lines>
+}
 type CoordOr = Pick<Lines, 'xOr' | 'yOr'> | null
 // type CoordFin = Pick<Lines, 'xFin' | 'yFin'> | null
 export function PolygonCanvas({ url }: { url: string }) {
   const canvasBeta = useRef<HTMLCanvasElement | null>(null)
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
   const [lines, setLines] = useState<Lines[]>([])
-  const [final, setFinal] = useState(false)
+  const [linesArr, setLinesArr] = useState<LinesArr[]>([])
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
@@ -45,7 +49,7 @@ export function PolygonCanvas({ url }: { url: string }) {
   const removeLines = () => {
     setLines([])
     setCoordOr(null)
-    setFinal(false)
+    setLinesArr([])
     const img = new Image()
     img.src = url
     img.onload = function () {
@@ -53,30 +57,36 @@ export function PolygonCanvas({ url }: { url: string }) {
         canvas.width = img.width
         canvas.height = img.height
         ctx.drawImage(img, 0, 0)
-        // aqui lo suyo seria hacer un array de poligonos
       }
     }
   }
   const closePoligon: MouseEventHandler<HTMLDivElement> = (ev) => {
     ev.stopPropagation()
     setCoordOr(null)
-    setFinal(true)
+    setLinesArr((prev) => [...prev, { lines, polygon: linesArr.length }])
+    setLines([])
   }
+  console.log(linesArr)
   if (lines.length >= 1 && ctx) {
     ctx.beginPath()
     ctx.moveTo(lines[0].xOr, lines[0].yOr)
     lines.map((lines) => {
       ctx.lineTo(lines.xFin, lines.yFin)
     })
-    // aqui hacer un map del array de poligonos iniciandolos y termianndolo
-    if (final) {
-      ctx?.closePath()
-    }
     ctx.stroke()
-    if (final) {
+  }
+  if (linesArr.length >= 1 && ctx) {
+    linesArr.map((lineArr) => {
+      ctx.beginPath()
+      ctx.moveTo(lineArr.lines[0].xOr, lineArr.lines[0].yOr)
+      lineArr.lines.map((lines) => {
+        ctx.lineTo(lines.xFin, lines.yFin)
+      })
+      ctx?.closePath()
+      ctx.stroke()
       ctx.fillStyle = 'green'
       ctx.fill()
-    }
+    })
   }
 
   return (
