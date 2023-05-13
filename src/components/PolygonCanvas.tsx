@@ -93,6 +93,7 @@ export function PolygonCanvas({ url }: { url: string }) {
           if (isPointInPolygon(coordX, coordY, line.lines)) {
             poligonInside = true
             setSelected(index)
+            console.log(linesArr[index])
             console.log('Clicked inside polygon')
           }
         })
@@ -117,6 +118,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     setLines([])
     setCoordOr(null)
     setLinesArr([])
+    setSelected(-1)
     const img = new Image()
     img.src = url
     img.onload = function () {
@@ -190,6 +192,15 @@ export function PolygonCanvas({ url }: { url: string }) {
               }}
             ></div>
           ))}
+        {selected >= 0 && (
+          <div
+            className="absolute h-2 w-2 border bg-orange-600 rounded-full"
+            style={{
+              top: linesArr[selected].lines[0].yOr - 5,
+              left: linesArr[selected].lines[0].xOr - 5,
+            }}
+          ></div>
+        )}
       </div>
       <button onClick={removeLines}>Limpiar lineas</button>
     </div>
