@@ -28,7 +28,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     img.onload = function () {
       console.log(canvas)
       if (canvas && ctx) {
-        console.log('dentro  de use')
+        // console.log('dentro  de use')
         canvas.width = img.width
         canvas.height = img.height
         ctx.drawImage(img, 0, 0)
@@ -41,7 +41,6 @@ export function PolygonCanvas({ url }: { url: string }) {
     polygon: Lines[]
   ): boolean => {
     let inside = false
-    console.log(polygon)
     const { length } = polygon
     for (let i = 0, j = length - 1; i <= length; j = i++) {
       if (i === 0) {
@@ -52,16 +51,15 @@ export function PolygonCanvas({ url }: { url: string }) {
         const intersect =
           yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
         if (intersect) inside = !inside
-        return inside
       } else if (i === length) {
-        const xi = polygon[i].xFin
-        const yi = polygon[i].yFin
-        const xj = polygon[j].xOr
-        const yj = polygon[j].yOr
+        console.log(polygon, i)
+        const xi = polygon[i - 1].xFin
+        const yi = polygon[i - 1].yFin
+        const xj = polygon[0].xOr
+        const yj = polygon[0].yOr
         const intersect =
           yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
         if (intersect) inside = !inside
-        return inside
       } else {
         const xi = polygon[i].xFin
         const yi = polygon[i].yFin
@@ -70,7 +68,6 @@ export function PolygonCanvas({ url }: { url: string }) {
         const intersect =
           yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi
         if (intersect) inside = !inside
-        return inside
       }
     }
     return inside
@@ -83,10 +80,14 @@ export function PolygonCanvas({ url }: { url: string }) {
     const coordX = clientX - left
     const coordY = clientY - top
     if (linesArr.length >= 1) {
-      const lastPolygon = linesArr[linesArr.length - 1]
-      if (isPointInPolygon(coordX, coordY, lastPolygon.lines)) {
-        console.log('Clicked inside polygon')
-      }
+      // const lastPolygon = linesArr[linesArr.length - 1]
+      linesArr.map((line) => {
+        if (isPointInPolygon(coordX, coordY, line.lines)) {
+          console.log('Clicked inside polygon')
+        }
+      })
+      // if (isPointInPolygon(coordX, coordY, lastPolygon.lines)) {
+      // }
     }
     if (!coordOr) {
       setCoordOr({ xOr: coordX, yOr: coordY })
