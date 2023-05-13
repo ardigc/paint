@@ -125,6 +125,22 @@ export function PolygonCanvas({ url }: { url: string }) {
       document.addEventListener('mouseup', handleMouseUp)
     }
   }
+  const doubleClickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
+    if (!ctx || !rectCanvas) return
+    const { left, top } = rectCanvas
+    const { clientX, clientY } = ev
+    const coordX = clientX - left
+    const coordY = clientY - top
+
+    if (!coordOr) {
+      setCoordOr({ xOr: coordX, yOr: coordY })
+    } else {
+      setLines((prev) => [
+        ...prev,
+        { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
+      ])
+    }
+  }
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!ctx || !rectCanvas) return
     const { left, top } = rectCanvas
@@ -207,6 +223,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     <div>
       <div
         className="relative w-max"
+        onDoubleClick={doubleClickHandler}
         onClick={clickHandler}
         onMouseDown={mouseDownHandler}
       >
