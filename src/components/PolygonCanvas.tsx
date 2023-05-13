@@ -76,15 +76,32 @@ export function PolygonCanvas({ url }: { url: string }) {
     const { clientX, clientY } = ev
     const coordX = clientX - left
     const coordY = clientY - top
+    let lastMouseX = ev.clientX
+    let lastMouseY = ev.clientY
     if (isPointInPolygon(coordX, coordY, linesArr[selected].lines)) {
       function handleMouseMove(ev: MouseEvent) {
         setLinesArr((prev) => {
+          // const deltaX = ev.clientX -lastMouseX
           const deltaX = ev.movementX
+          // const deltaY = ev.clientY -lastMouseY
           const deltaY = ev.movementY
           const newlines = [...prev]
           const line = newlines[selected]
-          line.lines.map((line) => {})
-          console.log(line)
+          line.lines.map((line, index) => {
+            const newxOr = line.xOr + deltaX
+            const newxFin = line.xFin + deltaX
+            const newyOr = line.yOr + deltaY
+            const newyFin = line.yFin + deltaY
+            // console.log(line)
+            newlines[selected].lines[index] = {
+              ...line,
+              xOr: newxOr,
+              yOr: newyOr,
+              xFin: newxFin,
+              yFin: newyFin,
+            }
+          })
+          console.log(newlines[selected])
           return newlines
         })
       }
