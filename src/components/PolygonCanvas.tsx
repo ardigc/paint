@@ -16,6 +16,7 @@ export function PolygonCanvas({ url }: { url: string }) {
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
   const [lines, setLines] = useState<Lines[]>([])
   const [linesArr, setLinesArr] = useState<LinesArr[]>([])
+  const [selected, setSelected] = useState(-1)
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
@@ -83,39 +84,35 @@ export function PolygonCanvas({ url }: { url: string }) {
     const coordX = clientX - left
     const coordY = clientY - top
     let poligonInside
-    if (linesArr.length >= 1) {
-      //actualizar into para que sea true
-      linesArr.map((line) => {
-        // isPointInPolygon(coordX, coordY, line.lines)
-        if (isPointInPolygon(coordX, coordY, line.lines)) {
-          poligonInside = true
-          console.log('Clicked inside polygon')
-        }
-      })
-      if (poligonInside) {
-        console.log('no se dibuja')
-      } else {
-        if (!coordOr) {
-          setCoordOr({ xOr: coordX, yOr: coordY })
+
+    if (!coordOr) {
+      if (linesArr.length >= 1) {
+        //actualizar into para que sea true
+        linesArr.map((line, index) => {
+          // isPointInPolygon(coordX, coordY, line.lines)
+          if (isPointInPolygon(coordX, coordY, line.lines)) {
+            poligonInside = true
+            setSelected(index)
+            console.log('Clicked inside polygon')
+          }
+        })
+        if (poligonInside) {
+          console.log('no se dibuja')
         } else {
-          setLines((prev) => [
-            ...prev,
-            { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
-          ])
+          setCoordOr({ xOr: coordX, yOr: coordY })
+          setSelected(-1)
         }
+      } else {
+        setCoordOr({ xOr: coordX, yOr: coordY })
       }
     } else {
-      if (!coordOr) {
-        setCoordOr({ xOr: coordX, yOr: coordY })
-      } else {
-        setLines((prev) => [
-          ...prev,
-          { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
-        ])
-      }
+      setLines((prev) => [
+        ...prev,
+        { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
+      ])
     }
-    // setInto(false)
   }
+  console.log(selected)
   const removeLines = () => {
     setLines([])
     setCoordOr(null)
@@ -175,6 +172,16 @@ export function PolygonCanvas({ url }: { url: string }) {
         )}
         {lines.length >= 1 &&
           lines.map((lines) => (
+            <div
+              className="absolute h-2 w-2 border bg-orange-600 rounded-full"
+              style={{
+                top: lines.yFin - 5,
+                left: lines.xFin - 5,
+              }}
+            ></div>
+          ))}
+        {selected >= 0 &&
+          linesArr[selected].lines.map((lines) => (
             <div
               className="absolute h-2 w-2 border bg-orange-600 rounded-full"
               style={{
