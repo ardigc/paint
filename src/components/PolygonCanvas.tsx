@@ -16,6 +16,7 @@ export function PolygonCanvas({ url }: { url: string }) {
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
   const [lines, setLines] = useState<Lines[]>([])
   const [linesArr, setLinesArr] = useState<LinesArr[]>([])
+  const [into, setInto] = useState(false)
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
@@ -70,6 +71,9 @@ export function PolygonCanvas({ url }: { url: string }) {
         if (intersect) inside = !inside
       }
     }
+    if (inside) {
+      setInto(true)
+    }
     return inside
   }
 
@@ -80,13 +84,24 @@ export function PolygonCanvas({ url }: { url: string }) {
     const coordX = clientX - left
     const coordY = clientY - top
     if (linesArr.length >= 1) {
+      console.log(into)
+      //actualizar into para que sea true
       linesArr.map((line) => {
-        if (isPointInPolygon(coordX, coordY, line.lines)) {
-          //aqui deberia haber alguna mierda que haga que si uno da true ya se ejecute
-          console.log('Clicked inside polygon')
-        } else {
-        }
+        isPointInPolygon(coordX, coordY, line.lines)
       })
+      if (into) {
+        //aqui deberia haber alguna mierda que haga que si uno da true ya se ejecute
+        console.log('Clicked inside polygon')
+      } else {
+        if (!coordOr) {
+          setCoordOr({ xOr: coordX, yOr: coordY })
+        } else {
+          setLines((prev) => [
+            ...prev,
+            { xOr: coordOr.xOr, yOr: coordOr.yOr, xFin: coordX, yFin: coordY },
+          ])
+        }
+      }
     } else {
       if (!coordOr) {
         setCoordOr({ xOr: coordX, yOr: coordY })
@@ -97,6 +112,7 @@ export function PolygonCanvas({ url }: { url: string }) {
         ])
       }
     }
+    setInto(false)
   }
   const removeLines = () => {
     setLines([])
