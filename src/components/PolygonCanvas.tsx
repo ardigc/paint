@@ -19,6 +19,7 @@ export function PolygonCanvas({ url }: { url: string }) {
   const [lines, setLines] = useState<Lines[]>([])
   const [linesArr, setLinesArr] = useState<LinesArr[]>([])
   const [selected, setSelected] = useState(-1)
+  const [grabing, setGrabing] = useState(false)
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
   const ctx = canvas?.getContext('2d')
@@ -38,6 +39,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     index: number,
     origen: boolean
   ) => {
+    setGrabing(true)
     if (origen) {
       setLinesArr((prev) => {
         const newLines = { ...prev }
@@ -204,6 +206,10 @@ export function PolygonCanvas({ url }: { url: string }) {
   }
   const clickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!ctx || !rectCanvas) return
+    if (grabing) {
+      setGrabing(false)
+      return
+    }
     const { left, top } = rectCanvas
     const { clientX, clientY } = ev
     const coordX = clientX - left
