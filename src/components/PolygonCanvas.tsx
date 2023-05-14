@@ -32,23 +32,47 @@ export function PolygonCanvas({ url }: { url: string }) {
     }
   }, [canvas])
 
-  const reDimPolygon = (newyFin: number, newxFin: number, index: number) => {
-    setLinesArr((prev) => {
-      const newLines = { ...prev }
+  const reDimPolygon = (
+    newyFin: number,
+    newxFin: number,
+    index: number,
+    origen: boolean
+  ) => {
+    if (origen) {
+      setLinesArr((prev) => {
+        const newLines = { ...prev }
 
-      console.log(newLines[selected].lines[index])
-      newLines[selected].lines[index] = {
-        ...newLines[selected].lines[index],
-        xFin: newxFin,
-        yFin: newyFin,
-      }
-      if (canvas && ctx && imgen) {
-        canvas.width = imgen.width
-        canvas.height = imgen.height
-      }
-      renderice()
-      return newLines
-    })
+        console.log(newLines[selected].lines[index])
+        newLines[selected].lines[index] = {
+          ...newLines[selected].lines[index],
+          xOr: newxFin,
+          yOr: newyFin,
+        }
+        if (canvas && ctx && imgen) {
+          canvas.width = imgen.width
+          canvas.height = imgen.height
+        }
+        renderice()
+        return newLines
+      })
+    } else {
+      setLinesArr((prev) => {
+        const newLines = { ...prev }
+
+        console.log(newLines[selected].lines[index])
+        newLines[selected].lines[index] = {
+          ...newLines[selected].lines[index],
+          xFin: newxFin,
+          yFin: newyFin,
+        }
+        if (canvas && ctx && imgen) {
+          canvas.width = imgen.width
+          canvas.height = imgen.height
+        }
+        renderice()
+        return newLines
+      })
+    }
   }
   const isPointInPolygon = (
     x: number,
@@ -216,13 +240,10 @@ export function PolygonCanvas({ url }: { url: string }) {
     setCoordOr(null)
     setLinesArr([])
     setSelected(-1)
-    const img = new Image()
-    img.src = url
-    img.onload = function () {
-      if (canvas && ctx && imgen) {
-        canvas.width = imgen.width
-        canvas.height = imgen.height
-      }
+
+    if (canvas && ctx && imgen) {
+      canvas.width = imgen.width
+      canvas.height = imgen.height
     }
   }
 
@@ -304,7 +325,13 @@ export function PolygonCanvas({ url }: { url: string }) {
           ))} */}
         {selected >= 0 &&
           linesArr[selected].lines.map((lines, index) => (
-            <SelectDiv {...lines} index={index} reDimPolygon={reDimPolygon} />
+            <SelectDiv
+              origen={false}
+              x={lines.xFin}
+              y={lines.yFin}
+              index={index}
+              reDimPolygon={reDimPolygon}
+            />
           ))}
         {selected >= 0 && (
           <div
