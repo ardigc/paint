@@ -87,15 +87,31 @@ export function PolygonCanvas({ url }: { url: string }) {
           line.lines.map((line) => {
             if (line.xOr <= 0 || line.xFin <= 0) {
               deltaX = Math.max(0, deltaX)
+              console.log(line.xFin, line.xOr)
             }
             if (line.yOr <= 0 || line.yFin <= 0) {
               deltaY = Math.max(0, deltaY)
+            }
+            if (rectCanvas) {
+              if (
+                line.xOr >= rectCanvas.width ||
+                line.xFin >= rectCanvas.width
+              ) {
+                deltaX = Math.min(0, deltaX)
+                console.log(line.xFin, line.xOr)
+              }
+              if (
+                line.yOr >= rectCanvas.height ||
+                line.yFin >= rectCanvas.height
+              ) {
+                deltaY = Math.min(0, deltaY)
+              }
             }
           })
 
           line.lines.map((line, index) => {
             const newxOr = line.xOr + deltaX
-            console.log(deltaX)
+            // console.log(deltaX)
             const newxFin = line.xFin + deltaX
             const newyOr = line.yOr + deltaY
             const newyFin = line.yFin + deltaY
