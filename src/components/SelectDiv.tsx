@@ -35,6 +35,7 @@ export default function SelectDiv({
     }
 
     function handleMouseUp() {
+      ev.stopPropagation()
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }

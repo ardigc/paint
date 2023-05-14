@@ -46,6 +46,7 @@ export function PolygonCanvas({ url }: { url: string }) {
         canvas.width = imgen.width
         canvas.height = imgen.height
       }
+      renderice()
       return newLines
     })
   }
@@ -231,28 +232,30 @@ export function PolygonCanvas({ url }: { url: string }) {
     setLinesArr((prev) => [...prev, { lines, polygon: linesArr.length }])
     setLines([])
   }
-
-  if (lines.length >= 1 && ctx) {
-    ctx.beginPath()
-    ctx.moveTo(lines[0].xOr, lines[0].yOr)
-    lines.map((lines) => {
-      ctx.lineTo(lines.xFin, lines.yFin)
-    })
-    ctx.stroke()
-  }
-  if (linesArr.length >= 1 && ctx) {
-    linesArr.map((lineArr) => {
+  const renderice = () => {
+    if (lines.length >= 1 && ctx) {
       ctx.beginPath()
-      ctx.moveTo(lineArr.lines[0].xOr, lineArr.lines[0].yOr)
-      lineArr.lines.map((lines) => {
+      ctx.moveTo(lines[0].xOr, lines[0].yOr)
+      lines.map((lines) => {
         ctx.lineTo(lines.xFin, lines.yFin)
       })
-      ctx?.closePath()
       ctx.stroke()
-      ctx.fillStyle = 'green'
-      ctx.fill()
-    })
+    }
+    if (linesArr.length >= 1 && ctx) {
+      linesArr.map((lineArr) => {
+        ctx.beginPath()
+        ctx.moveTo(lineArr.lines[0].xOr, lineArr.lines[0].yOr)
+        lineArr.lines.map((lines) => {
+          ctx.lineTo(lines.xFin, lines.yFin)
+        })
+        ctx?.closePath()
+        ctx.stroke()
+        ctx.fillStyle = 'green'
+        ctx.fill()
+      })
+    }
   }
+  renderice()
 
   return (
     <div>
