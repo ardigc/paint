@@ -6,21 +6,32 @@ interface Lines {
   xFin: number
   yFin: number
   index: number
+  reDimPolygon: (deltaX: number, deltaY: number, index: number) => void
 }
-export default function SelectDiv({ xOr, yOr, xFin, yFin, index }: Lines) {
+export default function SelectDiv({
+  xOr,
+  yOr,
+  xFin,
+  yFin,
+  index,
+  reDimPolygon,
+}: Lines) {
   const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     ev.stopPropagation()
-    console.log(xFin, xOr)
-    // function handleMouseMove() {
+    // let lastMouseX = ev.clientX
+    // let lastMouseY = ev.clientY
+    function handleMouseMove(ev: MouseEvent) {
+      let deltaX = ev.movementX
+      let deltaY = ev.movementY
+      reDimPolygon(deltaX, deltaY, index)
+    }
 
-    // }
-
-    // function handleMouseUp() {
-    //   document.removeEventListener('mousemove', handleMouseMove)
-    //   document.removeEventListener('mouseup', handleMouseUp)
-    // }
-    // document.addEventListener('mousemove', handleMouseMove)
-    // document.addEventListener('mouseup', handleMouseUp)
+    function handleMouseUp() {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
   }
   return (
     <div

@@ -31,6 +31,10 @@ export function PolygonCanvas({ url }: { url: string }) {
       canvas.height = imgen.height
     }
   }, [canvas])
+
+  const reDimPolygon = (deltaX: number, deltaY: number, index: number) => {
+    const newArr = { ...linesArr[selected] }
+  }
   const isPointInPolygon = (
     x: number,
     y: number,
@@ -144,6 +148,7 @@ export function PolygonCanvas({ url }: { url: string }) {
       document.addEventListener('mouseup', handleMouseUp)
     }
   }
+
   const doubleClickHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     if (!ctx || !rectCanvas) return
     const { left, top } = rectCanvas
@@ -284,7 +289,7 @@ export function PolygonCanvas({ url }: { url: string }) {
           ))} */}
         {selected >= 0 &&
           linesArr[selected].lines.map((lines, index) => (
-            <SelectDiv {...lines} index={index} />
+            <SelectDiv {...lines} index={index} reDimPolygon={reDimPolygon} />
           ))}
         {selected >= 0 && (
           <div
