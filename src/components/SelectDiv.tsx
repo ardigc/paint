@@ -1,3 +1,5 @@
+import { MouseEventHandler } from 'react'
+
 interface Lines {
   xOr: number
   yOr: number
@@ -6,9 +8,14 @@ interface Lines {
   index: number
 }
 export default function SelectDiv({ xOr, yOr, xFin, yFin, index }: Lines) {
+  const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
+    ev.stopPropagation()
+    console.log(xFin, xOr)
+  }
   return (
     <div
-      className="absolute h-2 w-2 border bg-orange-600 rounded-full"
+      onMouseDown={mouseDownHandler}
+      className="absolute h-3 w-3 border bg-orange-600 rounded-full"
       style={{
         top: yFin - 5,
         left: xFin - 5,

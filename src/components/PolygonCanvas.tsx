@@ -237,7 +237,7 @@ export function PolygonCanvas({ url }: { url: string }) {
             }}
           ></div>
         )}
-        {/* {lines.length >= 1 &&
+        {lines.length >= 1 &&
           lines.map((lines) => (
             <div
               className="absolute h-2 w-2 border bg-orange-600 rounded-full"
@@ -246,7 +246,7 @@ export function PolygonCanvas({ url }: { url: string }) {
                 left: lines.xFin - 5,
               }}
             ></div>
-          ))} */}
+          ))}
         {/* {selected >= 0 &&
           linesArr[selected].lines.map((lines) => (
             <div
