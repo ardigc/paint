@@ -1,4 +1,5 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import SelectDiv from './SelectDiv'
 interface Lines {
   xOr: number
   yOr: number
@@ -236,7 +237,7 @@ export function PolygonCanvas({ url }: { url: string }) {
             }}
           ></div>
         )}
-        {lines.length >= 1 &&
+        {/* {lines.length >= 1 &&
           lines.map((lines) => (
             <div
               className="absolute h-2 w-2 border bg-orange-600 rounded-full"
@@ -245,8 +246,8 @@ export function PolygonCanvas({ url }: { url: string }) {
                 left: lines.xFin - 5,
               }}
             ></div>
-          ))}
-        {selected >= 0 &&
+          ))} */}
+        {/* {selected >= 0 &&
           linesArr[selected].lines.map((lines) => (
             <div
               className="absolute h-2 w-2 border bg-orange-600 rounded-full"
@@ -255,6 +256,10 @@ export function PolygonCanvas({ url }: { url: string }) {
                 left: lines.xFin - 5,
               }}
             ></div>
+          ))} */}
+        {selected >= 0 &&
+          linesArr[selected].lines.map((lines, index) => (
+            <SelectDiv {...lines} index={index} />
           ))}
         {selected >= 0 && (
           <div
