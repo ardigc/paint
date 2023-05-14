@@ -342,6 +342,15 @@ export function PolygonCanvas({ url }: { url: string }) {
             }}
           ></div>
         )}
+        {selected >= 0 && (
+          <SelectDiv
+            origen={true}
+            x={linesArr[selected].lines[0].xOr}
+            y={linesArr[selected].lines[0].yOr}
+            index={0}
+            reDimPolygon={reDimPolygon}
+          />
+        )}
       </div>
       <button onClick={removeLines}>Limpiar lineas</button>
     </div>
