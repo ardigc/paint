@@ -18,12 +18,20 @@ export default function SelectDiv({
 }: Lines) {
   const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     ev.stopPropagation()
-    // let lastMouseX = ev.clientX
-    // let lastMouseY = ev.clientY
+    let lastMouseX = ev.clientX
+    let lastMouseY = ev.clientY
+    let newyFin = yFin
+    let newxFin = xFin
     function handleMouseMove(ev: MouseEvent) {
-      let deltaX = ev.movementX
-      let deltaY = ev.movementY
-      reDimPolygon(deltaX, deltaY, index)
+      ev.stopPropagation()
+      let deltaX = ev.clientX - lastMouseX
+      let deltaY = ev.clientY - lastMouseY
+      console.log(newxFin, '=', xFin, '+', deltaX)
+      newxFin = newxFin + deltaX
+      newyFin = newyFin + deltaY
+      reDimPolygon(newyFin, newxFin, index)
+      lastMouseX = ev.clientX
+      lastMouseY = ev.clientY
     }
 
     function handleMouseUp() {

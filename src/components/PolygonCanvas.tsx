@@ -32,8 +32,22 @@ export function PolygonCanvas({ url }: { url: string }) {
     }
   }, [canvas])
 
-  const reDimPolygon = (deltaX: number, deltaY: number, index: number) => {
-    const newArr = { ...linesArr[selected] }
+  const reDimPolygon = (newyFin: number, newxFin: number, index: number) => {
+    setLinesArr((prev) => {
+      const newLines = { ...prev }
+
+      console.log(newLines[selected].lines[index])
+      newLines[selected].lines[index] = {
+        ...newLines[selected].lines[index],
+        xFin: newxFin,
+        yFin: newyFin,
+      }
+      if (canvas && ctx && imgen) {
+        canvas.width = imgen.width
+        canvas.height = imgen.height
+      }
+      return newLines
+    })
   }
   const isPointInPolygon = (
     x: number,
@@ -72,7 +86,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     return inside
   }
   const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
-    if (!ctx || !rectCanvas) return
+    if (!ctx || !rectCanvas || selected === -1) return
     const { left, top } = rectCanvas
     const { clientX, clientY } = ev
     const coordX = clientX - left
@@ -83,9 +97,7 @@ export function PolygonCanvas({ url }: { url: string }) {
       function handleMouseMove(ev: MouseEvent) {
         setLinesArr((prev) => {
           let deltaX = ev.clientX - lastMouseX
-          // const deltaX = ev.movementX
           let deltaY = ev.clientY - lastMouseY
-          // const deltaY = ev.movementY
           const newlines = [...prev]
           const line = newlines[selected]
           line.lines.map((line) => {
@@ -128,7 +140,7 @@ export function PolygonCanvas({ url }: { url: string }) {
               yFin: newyFin,
             }
           })
-          console.log(newlines[selected])
+          // console.log(newlines[selected])
           lastMouseX = ev.clientX
           lastMouseY = ev.clientY
           if (canvas && ctx && imgen) {
