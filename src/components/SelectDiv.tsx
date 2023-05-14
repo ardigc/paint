@@ -11,6 +11,16 @@ export default function SelectDiv({ xOr, yOr, xFin, yFin, index }: Lines) {
   const mouseDownHandler: MouseEventHandler<HTMLDivElement> = (ev) => {
     ev.stopPropagation()
     console.log(xFin, xOr)
+    // function handleMouseMove() {
+
+    // }
+
+    // function handleMouseUp() {
+    //   document.removeEventListener('mousemove', handleMouseMove)
+    //   document.removeEventListener('mouseup', handleMouseUp)
+    // }
+    // document.addEventListener('mousemove', handleMouseMove)
+    // document.addEventListener('mouseup', handleMouseUp)
   }
   return (
     <div

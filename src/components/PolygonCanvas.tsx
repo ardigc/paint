@@ -78,12 +78,21 @@ export function PolygonCanvas({ url }: { url: string }) {
     if (isPointInPolygon(coordX, coordY, linesArr[selected].lines)) {
       function handleMouseMove(ev: MouseEvent) {
         setLinesArr((prev) => {
-          const deltaX = ev.clientX - lastMouseX
+          let deltaX = ev.clientX - lastMouseX
           // const deltaX = ev.movementX
-          const deltaY = ev.clientY - lastMouseY
+          let deltaY = ev.clientY - lastMouseY
           // const deltaY = ev.movementY
           const newlines = [...prev]
           const line = newlines[selected]
+          line.lines.map((line) => {
+            if (line.xOr <= 0 || line.xFin <= 0) {
+              deltaX = Math.max(0, deltaX)
+            }
+            if (line.yOr <= 0 || line.yFin <= 0) {
+              deltaY = Math.max(0, deltaY)
+            }
+          })
+
           line.lines.map((line, index) => {
             const newxOr = line.xOr + deltaX
             console.log(deltaX)
@@ -105,7 +114,7 @@ export function PolygonCanvas({ url }: { url: string }) {
           if (canvas && ctx && imgen) {
             canvas.width = imgen.width
             canvas.height = imgen.height
-            ctx.globalAlpha = 0.5
+            // ctx.globalAlpha = 0.5
           }
           return newlines
         })
