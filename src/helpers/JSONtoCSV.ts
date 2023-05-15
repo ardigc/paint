@@ -9,11 +9,13 @@ function jsonToCsv(data: any[]): string {
     const csv = [
       header.join(';'), // header row first
       header2.join(';'), // header row first
-      ...data.map((row) =>
-        header
-          .map((fieldName) => JSON.stringify(row[fieldName], replacer))
-          .join(';')
-      ),
+      ...data.map((row) => {
+        JSON.stringify(row[0].lines[0]).join(';')
+        console.log(header)
+        console.log(row.lines)
+
+        // header.map((fieldName) => JSON.stringify(row[fieldName].lines.map((line)=> JSON.stringify(line),replacer).join(';'), replacer)).join(';')
+      }),
     ]
     return csv.join('\r\n')
   } else {
