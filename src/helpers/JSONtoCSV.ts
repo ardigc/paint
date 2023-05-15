@@ -5,18 +5,27 @@ function jsonToCsv(data: any[]): string {
   const replacer = (key: string, value: any) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = Object.keys(data[0])
   if (Array.isArray(data[0].lines)) {
-    const header2 = Object.keys(data[0].lines[0])
     const csv = [
       header.join(';'), // header row first
-      header2.join(';'), // header row first
       ...data.map((row) => {
-        JSON.stringify(row[0].lines[0])
-        console.log(header)
-        console.log(row.lines)
+        const rowValues = header.map((fieldName) => {
+          if (Array.isArray(row[fieldName])) {
+            // If the property value is an array, extract its properties
+            return row[fieldName]
+              .map((subArrayItem: any) =>
+                JSON.stringify(subArrayItem, replacer)
+              )
+              .join(',')
+          } else {
+            // If the property value is not an array, stringify it as usual
+            return JSON.stringify(row[fieldName], replacer)
+          }
+        })
 
-        // header.map((fieldName) => JSON.stringify(row[fieldName].lines.map((line)=> JSON.stringify(line),replacer).join(';'), replacer)).join(';')
+        return rowValues.join(';')
       }),
     ]
+
     return csv.join('\r\n')
   } else {
     const csv = [
@@ -44,6 +53,6 @@ function downloadCsv(data: string, filename: string): void {
 
 export function downloadJsonAsCsv(data: any[], filename: string): void {
   const csv = jsonToCsv(data)
-  // downloadCsv(csv, filename)
-  console.log(csv)
+  downloadCsv(csv, filename)
+  // console.log(csv)
 }
