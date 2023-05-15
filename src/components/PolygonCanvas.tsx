@@ -44,7 +44,7 @@ export function PolygonCanvas({ url }: { url: string }) {
       setLinesArr((prev) => {
         const newLines = { ...prev }
 
-        console.log(newLines[selected].lines[index])
+        // console.log(newLines[selected].lines[index])
         newLines[selected].lines[index] = {
           ...newLines[selected].lines[index],
           xOr: newxFin,
@@ -59,14 +59,15 @@ export function PolygonCanvas({ url }: { url: string }) {
       })
     } else {
       setLinesArr((prev) => {
-        const newLines = { ...prev }
+        const newLines = [...prev]
 
-        console.log(newLines[selected].lines[index])
+        // console.log(newLines[selected].lines[index])
         newLines[selected].lines[index] = {
           ...newLines[selected].lines[index],
           xFin: newxFin,
           yFin: newyFin,
         }
+        console.log(newLines)
         if (canvas && ctx && imgen) {
           canvas.width = imgen.width
           canvas.height = imgen.height
@@ -130,7 +131,7 @@ export function PolygonCanvas({ url }: { url: string }) {
           line.lines.map((line) => {
             if (line.xOr <= 0 || line.xFin <= 0) {
               deltaX = Math.max(0, deltaX)
-              console.log(line.xFin, line.xOr)
+              // console.log(line.xFin, line.xOr)
             }
             if (line.yOr <= 0 || line.yFin <= 0) {
               deltaY = Math.max(0, deltaY)
@@ -141,7 +142,7 @@ export function PolygonCanvas({ url }: { url: string }) {
                 line.xFin >= rectCanvas.width
               ) {
                 deltaX = Math.min(0, deltaX)
-                console.log(line.xFin, line.xOr)
+                // console.log(line.xFin, line.xOr)
               }
               if (
                 line.yOr >= rectCanvas.height ||
@@ -210,6 +211,7 @@ export function PolygonCanvas({ url }: { url: string }) {
       setGrabing(false)
       return
     }
+    console.log(linesArr)
     const { left, top } = rectCanvas
     const { clientX, clientY } = ev
     const coordX = clientX - left
