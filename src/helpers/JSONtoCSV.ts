@@ -10,7 +10,7 @@ function jsonToCsv(data: any[]): string {
       header.join(';'), // header row first
       header2.join(';'), // header row first
       ...data.map((row) => {
-        JSON.stringify(row[0].lines[0]).join(';')
+        JSON.stringify(row[0].lines[0])
         console.log(header)
         console.log(row.lines)
 
