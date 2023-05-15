@@ -1,22 +1,9 @@
-import { ChangeEventHandler, MouseEventHandler, useRef, useState } from 'react'
+import { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import Slider from './Slider'
 
 export default function AudioEdit({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
-  const [time, setTime] = useState('')
-
-  const handleTimeChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const value = event.target.value
-
-    const regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-    // if (regex.test(value)) {
-    //   const [minut, sec] = value.split(':');
-    //   const totalSec = parseInt(minut, 10) * 60 + parseInt(sec, 10);
-
-    //     if (totalSec >= 0 && totalSec <= 145) {
-    setTime(value)
-    // }
-    // }
-  }
+  const [duration, setDuration] = useState(0)
   const playSegment = (startTime: number, endTime: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = startTime
@@ -26,29 +13,32 @@ export default function AudioEdit({ url }: { url: string }) {
         audioRef.current?.pause()
       }, (endTime - startTime) * 1000)
       const duration = audioRef.current?.duration
-      console.log(Math.trunc(duration / 60), duration % 60)
+      console.log(duration)
+      // console.log(Math.trunc(duration / 60), duration % 60)
     }
   }
-  const onClickHandle: MouseEventHandler<HTMLButtonElement> = () => {
-    playSegment(10, 15)
+  const anotation = () => {
+    const duration2 = audioRef.current?.duration
+    if (duration2 !== undefined) {
+      setDuration(duration2)
+    }
   }
+  // const onClickHandle: MouseEventHandler<HTMLButtonElement> = () => {
+  //   playSegment(10, 15)
+  // }
+  const onChangeInput = () => {}
   return (
     <div>
       <audio ref={audioRef} src={url} controls>
         Your browser does not support the <code>audio</code> element.
       </audio>
-      <div>
-        <input
-          type="text"
-          placeholder="MM:SS"
-          value={time}
-          onChange={handleTimeChange}
-        />
-        <p>Ingresa un valor en el rango de 00:00 a 02:25.</p>
-      </div>
-      <button onClick={onClickHandle}>
+
+      <Slider duration={duration} onChange={onChangeInput} />
+
+      {/* <button onClick={onClickHandle}>
         reproducir segmento 10 sec a 15 sec
-      </button>
+      </button> */}
+      <button onClick={anotation}>Comenzar a anotar</button>
     </div>
   )
 }
