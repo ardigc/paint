@@ -2,14 +2,19 @@ import { ChangeEventHandler, useRef, useState } from 'react'
 import UploadIcon from './components/UploadIcon'
 import Canvas from './components/Canvas'
 import { PolygonCanvas } from './components/PolygonCanvas'
+import AudioEdit from './components/AudioEdit'
 
 function App() {
   const [url, setUrl] = useState<string | null>(null)
-  const [type, setType] = useState<'squares' | 'polygon' | 'audio'>('polygon')
+  const [type, setType] = useState<'squares' | 'polygon' | 'audio'>('audio')
   const ref = useRef<HTMLInputElement | null>(null)
   const ref2 = useRef<HTMLInputElement | null>(null)
   const clickHandler = () => {
-    ref.current?.click()
+    if (type === 'audio') {
+      ref2.current?.click()
+    } else {
+      ref.current?.click()
+    }
   }
   const changeHandler: ChangeEventHandler<HTMLInputElement> = (ev) => {
     if (!ev.target.files) return
@@ -67,6 +72,7 @@ function App() {
       </select>
       {url && type === 'squares' && <Canvas url={url} />}
       {url && type === 'polygon' && <PolygonCanvas url={url} />}
+      {url && type === 'audio' && <AudioEdit url={url} />}
     </div>
   )
 }
