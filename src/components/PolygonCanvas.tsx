@@ -1,5 +1,6 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react'
 import SelectDiv from './SelectDiv'
+import { downloadJsonAsCsv } from '../helpers/JSONtoCSV'
 interface Lines {
   xOr: number
   yOr: number
@@ -261,6 +262,9 @@ export function PolygonCanvas({ url }: { url: string }) {
     setLinesArr((prev) => [...prev, { lines, polygon: linesArr.length }])
     setLines([])
   }
+  const handleDownload = () => {
+    downloadJsonAsCsv(squares, 'data.csv')
+  }
   const renderice = () => {
     if (lines.length >= 1 && ctx) {
       ctx.beginPath()
@@ -371,7 +375,10 @@ export function PolygonCanvas({ url }: { url: string }) {
       >
         Limpiar lineas
       </button>
-      <button className="border-t-neutral-900 bg-slate-500 rounded-md">
+      <button
+        onClick={handleDownload}
+        className="border-t-neutral-900 bg-slate-500 rounded-md"
+      >
         Export as CSV
       </button>
     </div>
