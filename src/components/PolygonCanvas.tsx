@@ -1,4 +1,10 @@
-import { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import {
+  ChangeEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import SelectDiv from './SelectDiv'
 import { downloadJsonAsCsv } from '../helpers/JSONtoCSV'
 interface Lines {
@@ -265,6 +271,17 @@ export function PolygonCanvas({ url }: { url: string }) {
   const handleDownload = () => {
     downloadJsonAsCsv(linesArr, 'data.csv')
   }
+  const changeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const polygon = e.target.value
+    setLinesArr((prev) => {
+      const newLines = [...prev]
+      const line = newLines[selected]
+      if (!line) return newLines
+
+      newLines[selected] = { ...line, polygon }
+      return newLines
+    })
+  }
   const renderice = () => {
     if (lines.length >= 1 && ctx) {
       ctx.beginPath()
@@ -366,6 +383,16 @@ export function PolygonCanvas({ url }: { url: string }) {
             index={0}
             reDimPolygon={reDimPolygon}
           />
+        )}
+        {selected >= 0 && (
+          <div>
+            Set polygon name:{' '}
+            <input
+              className="border"
+              value={linesArr[selected].polygon}
+              onChange={changeHandler}
+            />
+          </div>
         )}
       </div>
 
