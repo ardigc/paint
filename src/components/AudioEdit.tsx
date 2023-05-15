@@ -1,7 +1,8 @@
-import { useRef } from 'react'
+import { MouseEventHandler, useRef } from 'react'
 
 export default function AudioEdit({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
+  const duracion = audioRef.current?.duration / 60
   const playSegment = (startTime: number, endTime: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = startTime
@@ -12,7 +13,7 @@ export default function AudioEdit({ url }: { url: string }) {
       }, (endTime - startTime) * 1000)
     }
   }
-  const onClickHandle: MouseEvent<HTMLButtonElement> = () => {
+  const onClickHandle: MouseEventHandler<HTMLButtonElement> = () => {
     playSegment(10, 15)
   }
   return (
