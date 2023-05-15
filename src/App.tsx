@@ -5,7 +5,7 @@ import { PolygonCanvas } from './components/PolygonCanvas'
 
 function App() {
   const [url, setUrl] = useState<string | null>(null)
-  const [type, setType] = useState<'squares' | 'polygon'>('polygon')
+  const [type, setType] = useState<'squares' | 'polygon' | 'audio'>('polygon')
   const ref = useRef<HTMLInputElement | null>(null)
   const clickHandler = () => {
     ref.current?.click()
@@ -18,19 +18,21 @@ function App() {
   }
 
   const selectHandler: ChangeEventHandler<HTMLSelectElement> = (ev) => {
-    setType(ev.target.value as 'squares' | 'polygon')
+    setType(ev.target.value as 'squares' | 'polygon' | 'audio')
   }
 
   return (
     <div className="container mx-auto p-4">
-      <h2>Upload your imagen</h2>
-      <input
-        ref={ref}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={changeHandler}
-      />
+      {type !== 'audio' && <h2>Upload your imagen</h2>}
+      {type !== 'audio' && (
+        <input
+          ref={ref}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={changeHandler}
+        />
+      )}
       <div
         className="flex w-28 h-28 border-dashed border border-blue-500 rounded-md bg-stone-300 justify-center	items-center"
         onClick={clickHandler}
@@ -44,6 +46,7 @@ function App() {
       >
         <option value="squares">Squares</option>
         <option value="polygon">Polygon</option>
+        <option value="audio">Audio</option>
       </select>
       {url && type === 'squares' && <Canvas url={url} />}
       {url && type === 'polygon' && <PolygonCanvas url={url} />}

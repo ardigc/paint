@@ -6,20 +6,18 @@ function jsonToCsv(data: any[]): string {
   const header = Object.keys(data[0])
   if (Array.isArray(data[0].lines)) {
     const csv = [
-//probar si esto pone el último valor alante
-//[...header.slice(-1), ...header.slice(0, -1)].join(';')
-      header.join(';'), // header row first
+      //probar si esto pone el último valor alante
+      // [...header.slice(-1), ...header.slice(0, -1)].join(';'),
+      header.join(';'),
       ...data.map((row) => {
         const rowValues = header.map((fieldName) => {
           if (Array.isArray(row[fieldName])) {
-            
             return row[fieldName]
               .map((subArrayItem: any) =>
                 JSON.stringify(subArrayItem, replacer)
               )
               .join(',')
           } else {
-            
             return JSON.stringify(row[fieldName], replacer)
           }
         })
