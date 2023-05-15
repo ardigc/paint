@@ -18,7 +18,7 @@ export function PolygonCanvas({ url }: { url: string }) {
   const [coordOr, setCoordOr] = useState<CoordOr>(null)
   const [lines, setLines] = useState<Lines[]>([])
   const [linesArr, setLinesArr] = useState<LinesArr[]>([])
-  const [selected, setSelected] = useState(-1)
+  const [selected, setSelected] = useState(-2)
   const [grabing, setGrabing] = useState(false)
   const canvas = canvasBeta.current
   const rectCanvas = canvas?.getBoundingClientRect()
@@ -301,6 +301,19 @@ export function PolygonCanvas({ url }: { url: string }) {
           className="select-none relative"
         />
         <canvas ref={canvasBeta} className="absolute top-0 left-0"></canvas>
+
+        {selected === -2 && (
+          <div className="absolute h-full w-full  bg-gray-700 top-0 left-0 opacity-60"></div>
+        )}
+        {selected === -2 && (
+          <button
+            onClick={removeLines}
+            className=" absolute left-1/2 top-1/2 -translate-x-1/2 border-t-neutral-900 bg-stone-300 rounded-md"
+          >
+            Haz click aqui para comenzar
+          </button>
+        )}
+
         {coordOr && (
           <div
             className="absolute h-2 w-2 cursor-pointer border bg-orange-600 rounded-full"
@@ -321,16 +334,7 @@ export function PolygonCanvas({ url }: { url: string }) {
               }}
             ></div>
           ))}
-        {/* {selected >= 0 &&
-          linesArr[selected].lines.map((lines) => (
-            <div
-              className="absolute h-2 w-2 border bg-orange-600 rounded-full"
-              style={{
-                top: lines.yFin - 5,
-                left: lines.xFin - 5,
-              }}
-            ></div>
-          ))} */}
+
         {selected >= 0 &&
           linesArr[selected].lines.map((lines, index) => (
             <SelectDiv
@@ -360,7 +364,16 @@ export function PolygonCanvas({ url }: { url: string }) {
           />
         )}
       </div>
-      <button onClick={removeLines}>Limpiar lineas</button>
+
+      <button
+        className="border-t-neutral-900 bg-slate-500 rounded-md"
+        onClick={removeLines}
+      >
+        Limpiar lineas
+      </button>
+      <button className="border-t-neutral-900 bg-slate-500 rounded-md">
+        Export as CSV
+      </button>
     </div>
   )
 }
