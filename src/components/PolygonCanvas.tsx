@@ -263,7 +263,7 @@ export function PolygonCanvas({ url }: { url: string }) {
     setLines([])
   }
   const handleDownload = () => {
-    downloadJsonAsCsv(squares, 'data.csv')
+    downloadJsonAsCsv(linesArr, 'data.csv')
   }
   const renderice = () => {
     if (lines.length >= 1 && ctx) {
