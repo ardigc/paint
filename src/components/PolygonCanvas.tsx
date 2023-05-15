@@ -14,7 +14,7 @@ interface Lines {
   yFin: number
 }
 interface LinesArr {
-  polygon: number
+  polygon: number | string
   lines: Array<Lines>
 }
 type CoordOr = Pick<Lines, 'xOr' | 'yOr'> | null
@@ -384,17 +384,17 @@ export function PolygonCanvas({ url }: { url: string }) {
             reDimPolygon={reDimPolygon}
           />
         )}
-        {selected >= 0 && (
-          <div>
-            Set polygon name:{' '}
-            <input
-              className="border"
-              value={linesArr[selected].polygon}
-              onChange={changeHandler}
-            />
-          </div>
-        )}
       </div>
+      {selected >= 0 && (
+        <div>
+          Set polygon name:{' '}
+          <input
+            className="border"
+            value={linesArr[selected].polygon}
+            onChange={changeHandler}
+          />
+        </div>
+      )}
 
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"

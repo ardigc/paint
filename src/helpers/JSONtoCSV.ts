@@ -4,15 +4,19 @@ function jsonToCsv(data: any[]): string {
   }
   const replacer = (key: string, value: any) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = Object.keys(data[0])
-  const csv = [
-    header.join(','), // header row first
-    ...data.map((row) =>
-      header
-        .map((fieldName) => JSON.stringify(row[fieldName], replacer))
-        .join(',')
-    ),
-  ]
-  return csv.join('\r\n')
+  if (Array.isArray(data[0].lines)) {
+    return 'hola'
+  } else {
+    const csv = [
+      header.join(';'), // header row first
+      ...data.map((row) =>
+        header
+          .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+          .join(';')
+      ),
+    ]
+    return csv.join('\r\n')
+  }
 }
 
 function downloadCsv(data: string, filename: string): void {
@@ -28,5 +32,6 @@ function downloadCsv(data: string, filename: string): void {
 
 export function downloadJsonAsCsv(data: any[], filename: string): void {
   const csv = jsonToCsv(data)
-  downloadCsv(csv, filename)
+  // downloadCsv(csv, filename)
+  console.log(csv)
 }
