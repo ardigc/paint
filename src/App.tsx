@@ -7,14 +7,21 @@ function App() {
   const [url, setUrl] = useState<string | null>(null)
   const [type, setType] = useState<'squares' | 'polygon' | 'audio'>('polygon')
   const ref = useRef<HTMLInputElement | null>(null)
+  const ref2 = useRef<HTMLInputElement | null>(null)
   const clickHandler = () => {
     ref.current?.click()
   }
   const changeHandler: ChangeEventHandler<HTMLInputElement> = (ev) => {
     if (!ev.target.files) return
-    const img = ev.target.files[0]
-    const url = URL.createObjectURL(img)
-    setUrl(url)
+    if (type === 'audio') {
+      const audios = ev.target.files[0]
+      const url = URL.createObjectURL(audios)
+      setUrl(url)
+    } else {
+      const img = ev.target.files[0]
+      const url = URL.createObjectURL(img)
+      setUrl(url)
+    }
   }
 
   const selectHandler: ChangeEventHandler<HTMLSelectElement> = (ev) => {
@@ -24,11 +31,21 @@ function App() {
   return (
     <div className="container mx-auto p-4">
       {type !== 'audio' && <h2>Upload your imagen</h2>}
+      {type === 'audio' && <h2>Upload your audio</h2>}
       {type !== 'audio' && (
         <input
           ref={ref}
           type="file"
           accept="image/*"
+          className="hidden"
+          onChange={changeHandler}
+        />
+      )}
+      {type === 'audio' && (
+        <input
+          ref={ref2}
+          type="file"
+          accept="audio/*"
           className="hidden"
           onChange={changeHandler}
         />
