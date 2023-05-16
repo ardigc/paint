@@ -61,6 +61,7 @@ export default function AudioEdit({ url }: { url: string }) {
           init: durationInit,
           final: durationFinal,
         }
+        setAudioEdit({ index: -1, init: 0, final: 0, text: '' })
         return newAudioSegments
       })
       console.log(audioSegments)
@@ -95,6 +96,7 @@ export default function AudioEdit({ url }: { url: string }) {
             index={index}
             playSeg={playSegment}
             editAudio={OnEditAudio}
+            noEdit={audioEdit.index}
           />
         ))}
       {/* <button onClick={onClickHandle}>

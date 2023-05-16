@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SecToMin } from '../helpers/SecToMin'
 import { EditIcon, PlayIcon } from './UploadIcon'
 
@@ -9,7 +9,9 @@ export default function AudioSegment({
   playSeg,
   editAudio,
   index,
+  noEdit,
 }: {
+  noEdit: number
   text: string
   index: number
   init: number
@@ -18,6 +20,11 @@ export default function AudioSegment({
   editAudio: (init: number, final: number, index: number, text: string) => void
 }) {
   const [editing, setEditing] = useState(false)
+  useEffect(() => {
+    if (noEdit === -1) {
+      setEditing(false)
+    }
+  }, [noEdit])
   const onPlayHandle = () => {
     playSeg(init, final)
   }
