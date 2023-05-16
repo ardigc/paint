@@ -46,7 +46,7 @@ export default function Slider({
     durationFinal: duration * (balls.ballFinal / 100),
   }
   useEffect(() => {
-    if (index !== -1) {
+    if (index >= 0) {
       const ballI = (init * 100) / duration
       const ballF = (final * 100) / duration
       setBalls({ ballInit: ballI, ballFinal: ballF })
@@ -88,10 +88,6 @@ export default function Slider({
           balls.ballInit,
           Math.min(100, ((ev.clientX - left) * 100) / width)
         )
-        // setDurationSeg({
-        //   durationInit: durationSeg.durationInit,
-        //   durationFinal: duration * (newBallFinal / 100),
-        // })
         setBalls({ ballInit: balls.ballInit, ballFinal: newBallFinal })
       }
     }

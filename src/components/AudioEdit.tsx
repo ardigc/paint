@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Slider from './Slider'
 import AudioSegment from './AudioSegments'
 interface AudioSegment {
@@ -14,7 +14,7 @@ export default function AudioEdit({ url }: { url: string }) {
   const [audioEdit, setAudioEdit] = useState({
     init: 0,
     final: 0,
-    index: -1,
+    index: -2,
     text: '',
   })
   const playSegment = (startTime: number, endTime: number) => {
@@ -31,6 +31,7 @@ export default function AudioEdit({ url }: { url: string }) {
     }
   }
   const anotation = () => {
+    setAudioEdit({ init: 0, final: 0, index: -1, text: '' })
     const duration2 = audioRef.current?.duration
     if (duration2 !== undefined) {
       setDuration(duration2)
@@ -51,7 +52,7 @@ export default function AudioEdit({ url }: { url: string }) {
     text: string,
     index: number
   ) => {
-    if (index !== -1) {
+    if (index >= 0) {
       setAudioSegments((prev) => {
         const newAudioSegments = [...prev]
         const audioSeg = newAudioSegments[index]
@@ -98,18 +99,17 @@ export default function AudioEdit({ url }: { url: string }) {
               noEdit={audioEdit.index}
             />
           ))}
-        {/* <div className='absolute top-0 flex items-center justify-center '> */}
-
-        {/* <div className=' bg-slate-300 opacity-60 w-72 h-16 rounded-full'> */}
-
-        {/* </div> */}
-        <button
-          className="absolute border-t-neutral-900 bg-slate-500 rounded-md"
-          onClick={anotation}
-        >
-          Comenzar a anotar
-        </button>
-        {/* </div> */}
+        {audioEdit.index === -2 && (
+          <div className="absolute top-0 flex items-center justify-center ">
+            <div className=" bg-slate-300 opacity-60 w-72 h-16 rounded-full"></div>
+            <button
+              className="absolute border-t-neutral-900 bg-slate-500 rounded-md"
+              onClick={anotation}
+            >
+              Comenzar a anotar
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
