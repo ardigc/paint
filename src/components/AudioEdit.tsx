@@ -1,9 +1,15 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react'
 import Slider from './Slider'
+interface AudioSegment {
+  text: string
+  init: number
+  final: number
+}
 
 export default function AudioEdit({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [duration, setDuration] = useState(0)
+  const [audioSegments, setAudioSegments] = useState<AudioSegment[]>([])
   const playSegment = (startTime: number, endTime: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = startTime
@@ -26,7 +32,13 @@ export default function AudioEdit({ url }: { url: string }) {
   // const onClickHandle: MouseEventHandler<HTMLButtonElement> = () => {
   //   playSegment(10, 15)
   // }
-  const onChangeInput = () => {}
+  const onChangeInput = (durationInit: number, durationFinal: number) => {
+    setAudioSegments((prev) => [
+      ...prev,
+      { init: durationInit, final: durationFinal, text: '' },
+    ])
+    console.log(audioSegments)
+  }
   return (
     <div>
       <audio ref={audioRef} src={url} controls>

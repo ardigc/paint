@@ -1,10 +1,4 @@
-import {
-  ChangeEventHandler,
-  MouseEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { MouseEventHandler, useRef, useState } from 'react'
 import { SecToMin } from '../helpers/SecToMin'
 interface balls {
   ballInit: number
@@ -15,7 +9,7 @@ export default function Slider({
   onChange,
 }: {
   duration: number
-  onChange: () => void
+  onChange: (durationInit: number, durationFinal: number) => void
 }) {
   const line = useRef<HTMLDivElement>(null)
   const [balls, setBalls] = useState<balls>({ ballInit: 0, ballFinal: 0 })
@@ -78,7 +72,9 @@ export default function Slider({
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
   }
-  //   console.log(duration)
+  const onClickHandle = () => {
+    onChange(durationSeg.durationInit, durationSeg.durationFinal)
+  }
   return (
     <div>
       <div className="bg-violet-600 w-72 h-16 rounded-full relative">
@@ -115,6 +111,8 @@ export default function Slider({
           </div>
         </div>
       </div>
+      {/* aqui iria un formulario par el nombrw */}
+      <button onClick={onClickHandle}>Save</button>
     </div>
   )
 }
