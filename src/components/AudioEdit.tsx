@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import Slider from './Slider'
 import AudioSegment from './AudioSegments'
+import { downloadJsonAsCsv } from '../helpers/JSONtoCSV'
+import { SecToMin } from '../helpers/SecToMin'
 interface AudioSegment {
   text: string
   init: number
@@ -56,6 +58,7 @@ export default function AudioEdit({ url }: { url: string }) {
       setAudioSegments((prev) => {
         const newAudioSegments = [...prev]
         const audioSeg = newAudioSegments[index]
+
         newAudioSegments[index] = {
           ...audioSeg,
           text: text,
@@ -73,6 +76,20 @@ export default function AudioEdit({ url }: { url: string }) {
       ])
       console.log(audioSegments)
     }
+  }
+  const handleDownload = () => {
+    let newAudioSegmentsParse = [{}]
+    const newAudioSegments = [...audioSegments]
+    newAudioSegments.map((prop) => {
+      const newInit = SecToMin(prop.init)
+      const newFinal = SecToMin(prop.final)
+      const newSegment = { inicio: newInit, final: newFinal, coment: prop.text }
+      newAudioSegmentsParse.push(newSegment)
+    })
+    newAudioSegmentsParse.shift()
+
+    console.log(newAudioSegmentsParse)
+    downloadJsonAsCsv(newAudioSegmentsParse, 'data.csv')
   }
   return (
     <div>
@@ -110,6 +127,12 @@ export default function AudioEdit({ url }: { url: string }) {
             </button>
           </div>
         )}
+        <button
+          onClick={handleDownload}
+          className="border-t-neutral-900 bg-slate-500 rounded-md"
+        >
+          Export to CSV
+        </button>
       </div>
     </div>
   )
