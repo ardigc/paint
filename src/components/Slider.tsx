@@ -1,5 +1,6 @@
 import { MouseEventHandler, useRef, useState, ChangeEventHandler } from 'react'
 import { SecToMin } from '../helpers/SecToMin'
+import { PlayIcon } from './UploadIcon'
 interface balls {
   ballInit: number
   ballFinal: number
@@ -123,10 +124,10 @@ export default function Slider({
         </div>
         <div className="flex items-center justify-center">
           <button
-            className="border-t-neutral-900 bg-slate-500 rounded-md"
+            // className="border-t-neutral-900 bg-slate-500 rounded-md"
             onClick={onPlayHandle}
           >
-            Play segment
+            <PlayIcon />
           </button>
         </div>
       </div>
@@ -134,7 +135,7 @@ export default function Slider({
         Comentario:
         <input className="border" value={text} onChange={changeHandler} />
       </label>
-      {/* aqui iria un formulario par el nombrw */}
+
       <button
         className="border-t-neutral-900 bg-slate-500 rounded-md"
         onClick={onClickHandle}

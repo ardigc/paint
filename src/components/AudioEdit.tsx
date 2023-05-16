@@ -57,7 +57,9 @@ export default function AudioEdit({ url }: { url: string }) {
         playSeg={playSegment}
       />
       {audioSegments.length > 0 &&
-        audioSegments.map((values) => <AudioSegment {...values} />)}
+        audioSegments.map((values) => (
+          <AudioSegment {...values} playSeg={playSegment} />
+        ))}
       {/* <button onClick={onClickHandle}>
         reproducir segmento 10 sec a 15 sec
       </button> */}
