@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { SecToMin } from '../helpers/SecToMin'
 interface balls {
   ballInit: number
   ballFinal: number
@@ -18,8 +19,14 @@ export default function Slider({
 }) {
   const line = useRef<HTMLDivElement>(null)
   const [balls, setBalls] = useState<balls>({ ballInit: 0, ballFinal: 0 })
-  const mouseDownHandler1: MouseEventHandler<HTMLDivElement> = (ev) => {
+  const [durationSeg, setDurationSeg] = useState({
+    durationInit: 0,
+    durationFinal: duration,
+  })
+  const [showResult, setShowResult] = useState(-1)
+  const mouseDownHandler1: MouseEventHandler<HTMLDivElement> = () => {
     if (!line.current) return
+    setShowResult(0)
     const width = line.current.offsetWidth
     const left = line.current.getClientRects()[0].left
     function handleMouseMove(ev: MouseEvent) {
@@ -28,19 +35,25 @@ export default function Slider({
           0,
           Math.min(balls.ballFinal, ((ev.clientX - left) * 100) / width)
         )
-        console.log(newBallInit)
+
+        setDurationSeg({
+          durationInit: duration * (newBallInit / 100),
+          durationFinal: durationSeg.durationFinal,
+        })
         setBalls({ ballInit: newBallInit, ballFinal: balls.ballFinal })
       }
     }
     function handleMouseUp() {
+      setShowResult(-1)
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
   }
-  const mouseDownHandler2: MouseEventHandler<HTMLDivElement> = (ev) => {
+  const mouseDownHandler2: MouseEventHandler<HTMLDivElement> = () => {
     if (!line.current) return
+    setShowResult(1)
     const width = line.current.offsetWidth
     const left = line.current.getClientRects()[0].left
     function handleMouseMove(ev: MouseEvent) {
@@ -49,11 +62,16 @@ export default function Slider({
           balls.ballInit,
           Math.min(100, ((ev.clientX - left) * 100) / width)
         )
-        console.log(newBallFinal)
+        setDurationSeg({
+          durationInit: durationSeg.durationFinal,
+          durationFinal: duration * (newBallFinal / 100),
+        })
+
         setBalls({ ballInit: balls.ballInit, ballFinal: newBallFinal })
       }
     }
     function handleMouseUp() {
+      setShowResult(-1)
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
@@ -74,15 +92,27 @@ export default function Slider({
               left: balls.ballInit + '%',
             }}
             className="rounded-full cursor-grab absolute w-5 -translate-x-2 -translate-y-2 h-5 top-2/4 bg-violet-950 border border-violet-100"
-          ></div>
+          >
+            {showResult === 0 && (
+              <div className="flex select-none justify-center rounded-2xl items-center -translate-x-6 translate-y-5 h-9 w-16 bg-violet-300">
+                {SecToMin(durationSeg.durationInit)}
+              </div>
+            )}
+          </div>
 
           <div
             onMouseDown={mouseDownHandler2}
             style={{
               left: balls.ballFinal + '%',
             }}
-            className="rounded-full cursor-grab absolute w-5 -translate-x-2 -translate-y-2 h-5 top-2/4 bg-violet-950 border border-violet-100"
-          ></div>
+            className="rounded-full cursor-grab absolute w-5 -translate-x-2 -translate-y-2 h-5 top-2/4 bg-violet-950 border border-violet-100 "
+          >
+            {showResult === 1 && (
+              <div className="flex select-none justify-center rounded-2xl items-center -translate-x-6 translate-y-5 h-9 w-16 bg-violet-300">
+                {SecToMin(durationSeg.durationFinal)}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
