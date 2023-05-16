@@ -78,30 +78,39 @@ export default function AudioEdit({ url }: { url: string }) {
       <audio ref={audioRef} src={url} controls>
         Your browser does not support the <code>audio</code> element.
       </audio>
-      <button onClick={anotation}>Comenzar a anotar</button>
+      <div className="relative">
+        <Slider
+          duration={duration}
+          onChange={onChangeInput}
+          playSeg={playSegment}
+          init={audioEdit.init}
+          final={audioEdit.final}
+          index={audioEdit.index}
+          text2={audioEdit.text}
+        />
+        {audioSegments.length > 0 &&
+          audioSegments.map((values, index) => (
+            <AudioSegment
+              {...values}
+              index={index}
+              playSeg={playSegment}
+              editAudio={OnEditAudio}
+              noEdit={audioEdit.index}
+            />
+          ))}
+        {/* <div className='absolute top-0 flex items-center justify-center '> */}
 
-      <Slider
-        duration={duration}
-        onChange={onChangeInput}
-        playSeg={playSegment}
-        init={audioEdit.init}
-        final={audioEdit.final}
-        index={audioEdit.index}
-        text2={audioEdit.text}
-      />
-      {audioSegments.length > 0 &&
-        audioSegments.map((values, index) => (
-          <AudioSegment
-            {...values}
-            index={index}
-            playSeg={playSegment}
-            editAudio={OnEditAudio}
-            noEdit={audioEdit.index}
-          />
-        ))}
-      {/* <button onClick={onClickHandle}>
-        reproducir segmento 10 sec a 15 sec
-      </button> */}
+        {/* <div className=' bg-slate-300 opacity-60 w-72 h-16 rounded-full'> */}
+
+        {/* </div> */}
+        <button
+          className="absolute border-t-neutral-900 bg-slate-500 rounded-md"
+          onClick={anotation}
+        >
+          Comenzar a anotar
+        </button>
+        {/* </div> */}
+      </div>
     </div>
   )
 }

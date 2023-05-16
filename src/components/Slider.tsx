@@ -66,10 +66,6 @@ export default function Slider({
           Math.min(balls.ballFinal, ((ev.clientX - left) * 100) / width)
         )
 
-        // setDurationSeg({
-        //   durationInit: duration * (newBallInit / 100),
-        //   durationFinal: durationSeg.durationFinal,
-        // })
         setBalls({ ballInit: newBallInit, ballFinal: balls.ballFinal })
       }
     }
