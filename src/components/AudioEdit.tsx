@@ -11,6 +11,7 @@ export default function AudioEdit({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [duration, setDuration] = useState(0)
   const [audioSegments, setAudioSegments] = useState<AudioSegment[]>([])
+  const [audioEdit, setAudioEdit] = useState({ init: 0, final: 0, index: -1 })
   const playSegment = (startTime: number, endTime: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = startTime
@@ -55,6 +56,9 @@ export default function AudioEdit({ url }: { url: string }) {
         duration={duration}
         onChange={onChangeInput}
         playSeg={playSegment}
+        init={audioEdit.init}
+        final={audioEdit.final}
+        index={audioEdit.index}
       />
       {audioSegments.length > 0 &&
         audioSegments.map((values) => (

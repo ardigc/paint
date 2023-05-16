@@ -9,7 +9,13 @@ export default function Slider({
   duration,
   onChange,
   playSeg,
+  init,
+  final,
+  index,
 }: {
+  init: number
+  index: number
+  final: number
   duration: number
   onChange: (durationInit: number, durationFinal: number, text: string) => void
   playSeg: (startTime: number, endTime: number) => void
