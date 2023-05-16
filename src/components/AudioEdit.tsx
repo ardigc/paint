@@ -45,7 +45,11 @@ export default function AudioEdit({ url }: { url: string }) {
         Your browser does not support the <code>audio</code> element.
       </audio>
 
-      <Slider duration={duration} onChange={onChangeInput} />
+      <Slider
+        duration={duration}
+        onChange={onChangeInput}
+        playSeg={playSegment}
+      />
 
       {/* <button onClick={onClickHandle}>
         reproducir segmento 10 sec a 15 sec
