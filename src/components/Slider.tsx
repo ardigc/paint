@@ -1,4 +1,10 @@
-import { MouseEventHandler, useRef, useState, ChangeEventHandler } from 'react'
+import {
+  MouseEventHandler,
+  useRef,
+  useState,
+  ChangeEventHandler,
+  useEffect,
+} from 'react'
 import { SecToMin } from '../helpers/SecToMin'
 import { PlayIcon } from './UploadIcon'
 interface balls {
@@ -12,22 +18,41 @@ export default function Slider({
   init,
   final,
   index,
+  text2,
 }: {
   init: number
+  text2: string
   index: number
   final: number
   duration: number
-  onChange: (durationInit: number, durationFinal: number, text: string) => void
+  onChange: (
+    durationInit: number,
+    durationFinal: number,
+    text: string,
+    index: number
+  ) => void
   playSeg: (startTime: number, endTime: number) => void
 }) {
   const line = useRef<HTMLDivElement>(null)
   const [balls, setBalls] = useState<balls>({ ballInit: 0, ballFinal: 0 })
   const [text, setText] = useState('')
-  const [durationSeg, setDurationSeg] = useState({
-    durationInit: 0,
-    durationFinal: duration,
-  })
+  // const [durationSeg, setDurationSeg] = useState({
+  //   durationInit: 0,
+  //   durationFinal: duration,
+  // })
   const [showResult, setShowResult] = useState(-1)
+  const durationSeg = {
+    durationInit: duration * (balls.ballInit / 100),
+    durationFinal: duration * (balls.ballFinal / 100),
+  }
+  useEffect(() => {
+    if (index !== -1) {
+      const ballI = (init * 100) / duration
+      const ballF = (final * 100) / duration
+      setBalls({ ballInit: ballI, ballFinal: ballF })
+      setText(text2)
+    }
+  }, [index])
   const mouseDownHandler1: MouseEventHandler<HTMLDivElement> = () => {
     if (!line.current) return
     setShowResult(0)
@@ -41,10 +66,10 @@ export default function Slider({
           Math.min(balls.ballFinal, ((ev.clientX - left) * 100) / width)
         )
 
-        setDurationSeg({
-          durationInit: duration * (newBallInit / 100),
-          durationFinal: durationSeg.durationFinal,
-        })
+        // setDurationSeg({
+        //   durationInit: duration * (newBallInit / 100),
+        //   durationFinal: durationSeg.durationFinal,
+        // })
         setBalls({ ballInit: newBallInit, ballFinal: balls.ballFinal })
       }
     }
@@ -67,10 +92,10 @@ export default function Slider({
           balls.ballInit,
           Math.min(100, ((ev.clientX - left) * 100) / width)
         )
-        setDurationSeg({
-          durationInit: durationSeg.durationInit,
-          durationFinal: duration * (newBallFinal / 100),
-        })
+        // setDurationSeg({
+        //   durationInit: durationSeg.durationInit,
+        //   durationFinal: duration * (newBallFinal / 100),
+        // })
         setBalls({ ballInit: balls.ballInit, ballFinal: newBallFinal })
       }
     }
@@ -83,7 +108,7 @@ export default function Slider({
     document.addEventListener('mouseup', handleMouseUp)
   }
   const onClickHandle = () => {
-    onChange(durationSeg.durationInit, durationSeg.durationFinal, text)
+    onChange(durationSeg.durationInit, durationSeg.durationFinal, text, index)
   }
   const onPlayHandle = () => {
     playSeg(durationSeg.durationInit, durationSeg.durationFinal)

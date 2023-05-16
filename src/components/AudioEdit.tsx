@@ -11,7 +11,12 @@ export default function AudioEdit({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [duration, setDuration] = useState(0)
   const [audioSegments, setAudioSegments] = useState<AudioSegment[]>([])
-  const [audioEdit, setAudioEdit] = useState({ init: 0, final: 0, index: -1 })
+  const [audioEdit, setAudioEdit] = useState({
+    init: 0,
+    final: 0,
+    index: -1,
+    text: '',
+  })
   const playSegment = (startTime: number, endTime: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = startTime
@@ -31,19 +36,41 @@ export default function AudioEdit({ url }: { url: string }) {
       setDuration(duration2)
     }
   }
-  // const onClickHandle: MouseEventHandler<HTMLButtonElement> = () => {
-  //   playSegment(10, 15)
-  // }
+  const OnEditAudio = (
+    init: number,
+    final: number,
+    index: number,
+    text: string
+  ) => {
+    setAudioEdit({ init: init, final: final, index: index, text: text })
+    // console.log("hola")
+  }
   const onChangeInput = (
     durationInit: number,
     durationFinal: number,
-    text: string
+    text: string,
+    index: number
   ) => {
-    setAudioSegments((prev) => [
-      ...prev,
-      { init: durationInit, final: durationFinal, text: text },
-    ])
-    console.log(audioSegments)
+    if (index !== -1) {
+      setAudioSegments((prev) => {
+        const newAudioSegments = [...prev]
+        const audioSeg = newAudioSegments[index]
+        newAudioSegments[index] = {
+          ...audioSeg,
+          text: text,
+          init: durationInit,
+          final: durationFinal,
+        }
+        return newAudioSegments
+      })
+      console.log(audioSegments)
+    } else {
+      setAudioSegments((prev) => [
+        ...prev,
+        { init: durationInit, final: durationFinal, text: text },
+      ])
+      console.log(audioSegments)
+    }
   }
   return (
     <div>
@@ -59,10 +86,16 @@ export default function AudioEdit({ url }: { url: string }) {
         init={audioEdit.init}
         final={audioEdit.final}
         index={audioEdit.index}
+        text2={audioEdit.text}
       />
       {audioSegments.length > 0 &&
-        audioSegments.map((values) => (
-          <AudioSegment {...values} playSeg={playSegment} />
+        audioSegments.map((values, index) => (
+          <AudioSegment
+            {...values}
+            index={index}
+            playSeg={playSegment}
+            editAudio={OnEditAudio}
+          />
         ))}
       {/* <button onClick={onClickHandle}>
         reproducir segmento 10 sec a 15 sec

@@ -7,11 +7,15 @@ export default function AudioSegment({
   init,
   final,
   playSeg,
+  editAudio,
+  index,
 }: {
   text: string
+  index: number
   init: number
   final: number
   playSeg: (startTime: number, endTime: number) => void
+  editAudio: (init: number, final: number, index: number, text: string) => void
 }) {
   const [editing, setEditing] = useState(false)
   const onPlayHandle = () => {
@@ -19,6 +23,7 @@ export default function AudioSegment({
   }
   const onEditHandle = () => {
     setEditing(true)
+    editAudio(init, final, index, text)
   }
   return (
     <div>
@@ -36,7 +41,7 @@ export default function AudioSegment({
           </button>
         </div>
       )}
-      {editing && <div> hola</div>}
+      {editing && <div> editing...</div>}
     </div>
   )
 }
