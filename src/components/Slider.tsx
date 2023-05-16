@@ -10,7 +10,7 @@ export default function Slider({
   playSeg,
 }: {
   duration: number
-  onChange: (durationInit: number, durationFinal: number) => void
+  onChange: (durationInit: number, durationFinal: number, text: string) => void
   playSeg: (startTime: number, endTime: number) => void
 }) {
   const line = useRef<HTMLDivElement>(null)
@@ -76,7 +76,7 @@ export default function Slider({
     document.addEventListener('mouseup', handleMouseUp)
   }
   const onClickHandle = () => {
-    onChange(durationSeg.durationInit, durationSeg.durationFinal)
+    onChange(durationSeg.durationInit, durationSeg.durationFinal, text)
   }
   const onPlayHandle = () => {
     playSeg(durationSeg.durationInit, durationSeg.durationFinal)
@@ -132,7 +132,7 @@ export default function Slider({
       </div>
       <label>
         Comentario:
-        <input value={text} onChange={changeHandler} />
+        <input className="border" value={text} onChange={changeHandler} />
       </label>
       {/* aqui iria un formulario par el nombrw */}
       <button
